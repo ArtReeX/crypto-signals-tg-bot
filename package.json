@@ -1,0 +1,38 @@
+{
+  "name": "crypto-signals-tg-bot",
+  "version": "0.0.1",
+  "description": " A bot for Telegram based on a neural network that displays signals for the purchase/sale of cryptocurrency.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "build": "tsc",
+    "dev": "nodemon ./.build/index --watch ./.build --delay 3",
+    "prod": "node ./.build/index",
+    "type": "git",
+    "url": "git+https://github.com/ArtReeX/crypto-signals-tg-bot.git"
+  },
+  "keywords": [
+    "telegram",
+    "tensorflow",
+    "cryptocurrency",
+    "bot",
+    "typescript",
+    "node",
+    "signals"
+  ],
+  "author": "Arthur Lazarenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArtReeX/crypto-signals-tg-bot/issues"
+  },
+  "homepage": "https://github.com/ArtReeX/crypto-signals-tg-bot#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.1",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.3.2"
+  }
+}
