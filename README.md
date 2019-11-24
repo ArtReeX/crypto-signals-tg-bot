@@ -1,2 +1,2 @@
-# tg-crypto-signals-bot
+# crypto-signals-tg-bot
  A bot for Telegram based on a neural network that displays signals for the purchase/sale of cryptocurrency.
