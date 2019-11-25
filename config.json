@@ -1,0 +1,12 @@
+{
+  "directions": [
+    {
+      "pair": "BTCUSDT",
+      "intervals": ["1m, 5m"]
+    },
+    {
+      "pair": "ETHUSDT",
+      "intervals": ["10m, 15m"]
+    }
+  ]
+}
