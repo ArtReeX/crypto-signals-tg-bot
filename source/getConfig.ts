@@ -18,6 +18,9 @@ export type Interval =
   | "1M";
 
 interface IConfig {
+  tensorflow: {
+    sequence: number;
+  };
   directions: {
     pair: Symbol;
     intervals: [Interval];

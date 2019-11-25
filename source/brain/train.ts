@@ -1,7 +1,11 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ISamples } from "./createSamples";
+import getConfig from "../getConfig";
 
-export default async (samples: ISamples): Promise<void> => {
+export default async (
+  samples: ISamples,
+  sequence: number = getConfig().tensorflow.sequence
+): Promise<void> => {
   const sizeTrain = samples.x.length * 0.7;
 
   const xTrain = tf.tensor3d(samples.x.slice(0, sizeTrain));
@@ -13,7 +17,7 @@ export default async (samples: ISamples): Promise<void> => {
   const model = tf.sequential({
     layers: [
       tf.layers.lstm({
-        inputShape: [9, 9],
+        inputShape: [9, sequence - 1],
         units: 81,
         returnSequences: true
       }),

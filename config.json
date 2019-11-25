@@ -1,4 +1,7 @@
 {
+  "tensorflow": {
+    "sequence": 10
+  },
   "directions": [
     {
       "pair": "BTCUSDT",
