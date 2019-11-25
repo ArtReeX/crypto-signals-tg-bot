@@ -21,6 +21,9 @@ const tf = __importStar(require("@tensorflow/tfjs-node"));
         const samples = createSamples_1.default(history);
         await brain_1.default.train(samples);
     }
-    const model = await tf.loadLayersModel("file://./model/model.json");
+    const model = await tf
+        .loadLayersModel("file://./model/model.json")
+        .then(() => console.log("Neural network snapshot uploaded successfully."))
+        .catch(({ message }) => console.log(`Failed to load neural network image: ${message}`));
 })();
 //# sourceMappingURL=index.js.map

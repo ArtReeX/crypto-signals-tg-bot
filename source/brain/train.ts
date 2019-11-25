@@ -4,7 +4,7 @@ import getConfig from "../getConfig";
 
 export default async (
   samples: ISamples,
-  sequence: number = getConfig().tensorflow.sequence
+  epochs: number = getConfig().tensorflow.epochs
 ): Promise<void> => {
   const sizeTrain = samples.x.length * 0.7;
 
@@ -17,22 +17,22 @@ export default async (
   const model = tf.sequential({
     layers: [
       tf.layers.lstm({
-        inputShape: [9, sequence - 1],
-        units: 81,
+        inputShape: [samples.x[0][0].length, samples.x[0][0].length],
+        units: samples.x[0].length * samples.x[0][0].length,
         returnSequences: true
       }),
       tf.layers.dropout({ rate: 0.2 }),
       tf.layers.lstm({
-        units: 162,
+        units: samples.x[0].length * samples.x[0][0].length * 2,
         returnSequences: true
       }),
       tf.layers.dropout({ rate: 0.2 }),
       tf.layers.lstm({
-        units: 81,
+        units: samples.x[0].length * samples.x[0][0].length,
         returnSequences: false
       }),
       tf.layers.dropout({ rate: 0.2 }),
-      tf.layers.dense({ units: 9, activation: "linear" })
+      tf.layers.dense({ units: samples.x[0][0].length, activation: "linear" })
     ]
   });
 
@@ -44,15 +44,26 @@ export default async (
 
   await model
     .fit(xTrain, yTrain, {
-      epochs: 50,
+      epochs,
       shuffle: false,
-      validationData: [xTest, yTest]
+      validationData: [xTest, yTest],
+      callbacks: {
+        onTrainBegin: () => console.log("Neural network training started."),
+        onTrainEnd: () => console.log("Neural network training completed.")
+      }
     })
-    .then(() => console.log("Нейронная сеть успешно обучена."))
-    .catch(() => console.log("Не удалось обучить нейронную сеть"));
+    .then(async () => await saveModel(model))
+    .catch(({ message }: Error) =>
+      console.log(`Failed to train the neural network: ${message}`)
+    );
+};
 
+const saveModel = async (model: tf.Sequential): Promise<void> =>
   await model
     .save("file://./model")
-    .then(() => console.log("Снимок нейронной сети успешно сохранён."))
-    .catch(() => console.log("Не удалось сохранить снимок нейронной сети."));
-};
+    .then(() =>
+      console.log("A snapshot of the neural network was successfully saved.")
+    )
+    .catch(({ message }: Error) =>
+      console.log(`Failed to save snapshot of neural network: ${message}`)
+    );

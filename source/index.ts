@@ -13,5 +13,10 @@ import { ICandle } from "./brain/types";
     await brain.train(samples);
   }
 
-  const model = await tf.loadLayersModel("file://./model/model.json");
+  const model = await tf
+    .loadLayersModel("file://./model/model.json")
+    .then(() => console.log("Neural network snapshot uploaded successfully."))
+    .catch(({ message }: Error) =>
+      console.log(`Failed to load neural network image: ${message}`)
+    );
 })();

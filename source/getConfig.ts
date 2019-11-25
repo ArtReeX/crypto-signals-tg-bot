@@ -20,6 +20,7 @@ export type Interval =
 interface IConfig {
   tensorflow: {
     sequence: number;
+    epochs: number;
   };
   directions: {
     pair: Symbol;

@@ -1,14 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const utilities_1 = require("./utilities");
-const SEQ = 10;
-exports.default = (candles) => {
+const getConfig_1 = __importDefault(require("../getConfig"));
+exports.default = (candles, sequence = getConfig_1.default().tensorflow.sequence) => {
     const samples = { x: [], y: [] };
-    for (let count = 0; count + SEQ < candles.length; count++) {
+    for (let count = 0; count + sequence < candles.length; count++) {
         samples.x.push(candles
-            .slice(count, count + SEQ - 1)
+            .slice(count, count + sequence - 1)
             .map(candle => utilities_1.normalize(utilities_1.toArray(candle))));
-        samples.y.push(utilities_1.normalize(utilities_1.toArray(candles[count + SEQ - 1])));
+        samples.y.push(utilities_1.normalize(utilities_1.toArray(candles[count + sequence - 1])));
     }
     return samples;
 };

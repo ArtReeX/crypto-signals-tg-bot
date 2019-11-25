@@ -1,6 +1,7 @@
 {
   "tensorflow": {
-    "sequence": 10
+    "sequence": 10,
+    "epochs": 50
   },
   "directions": [
     {
