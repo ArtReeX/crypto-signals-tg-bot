@@ -1,13 +1,8 @@
-import { ICandle } from "./types";
+import { ICandle, ISamples } from "./types";
 import { toArray, normalize } from "./utilities";
 import getConfig from "../getConfig";
 
-export interface ISamples {
-  x: number[][][];
-  y: number[][];
-}
-
-export default (
+const create = (
   candles: ICandle[],
   sequence: number = getConfig().tensorflow.sequence
 ): ISamples => {
@@ -24,3 +19,5 @@ export default (
 
   return samples;
 };
+
+export default { create };

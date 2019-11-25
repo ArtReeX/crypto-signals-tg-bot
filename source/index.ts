@@ -1,22 +1,20 @@
 import brain from "./brain";
-import createSamples, { ISamples } from "./brain/createSamples";
+import { ISamples } from "./brain/types";
 import binance from "./binance";
-import fs from "fs";
-import * as tf from "@tensorflow/tfjs-node";
 import { ICandle } from "./brain/types";
 
 (async () => {
-  if (!fs.existsSync("./model")) {
+  if (!brain.images.exist()) {
     const history: ICandle[] = await binance.getHistory("BTCUSDT", "15m");
-    const samples: ISamples = createSamples(history);
+    const samples: ISamples = brain.samples.create(history);
 
-    await brain.train(samples);
+    await brain.train.run(samples);
   }
 
-  const model = await tf
-    .loadLayersModel("file://./model/model.json")
-    .then(() => console.log("Neural network snapshot uploaded successfully."))
-    .catch(({ message }: Error) =>
-      console.log(`Failed to load neural network image: ${message}`)
-    );
+  try {
+    const model = await brain.images.load();
+    console.info("Neural network snapshot loaded successfully.");
+  } catch ({ message }) {
+    throw new Error(`Failed to load neural network image: ${message}`);
+  }
 })();

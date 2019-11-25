@@ -17,3 +17,8 @@ export interface ICandle {
   baseAssetVolume: number;
   quoteAssetVolume: number;
 }
+
+export interface ISamples {
+  x: number[][][];
+  y: number[][];
+}
