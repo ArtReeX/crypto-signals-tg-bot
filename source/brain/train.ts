@@ -1,8 +1,7 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ISamples } from "./createSamples";
-import fs from "fs";
 
-export default async (samples: ISamples) => {
+export default async (samples: ISamples): Promise<void> => {
   const sizeTrain = samples.x.length * 0.7;
 
   const xTrain = tf.tensor3d(samples.x.slice(0, sizeTrain));
@@ -49,7 +48,7 @@ export default async (samples: ISamples) => {
     .catch(() => console.log("Не удалось обучить нейронную сеть"));
 
   await model
-    .save(`file://./model`)
+    .save("file://./model")
     .then(() => console.log("Снимок нейронной сети успешно сохранён."))
     .catch(() => console.log("Не удалось сохранить снимок нейронной сети."));
 };

@@ -1,7 +1,17 @@
 import brain from "./brain";
-import createSamples from "./brain/createSamples";
+import createSamples, { ISamples } from "./brain/createSamples";
 import binance from "./binance";
+import fs from "fs";
+import * as tf from "@tensorflow/tfjs-node";
+import { ICandle } from "./brain/types";
 
 (async () => {
-  brain.train(createSamples(await binance.getHistory("BTCUSDT", "1w")));
+  if (!fs.existsSync("./model")) {
+    const history: ICandle[] = await binance.getHistory("BTCUSDT", "15m");
+    const samples: ISamples = createSamples(history);
+
+    await brain.train(samples);
+  }
+
+  const model = await tf.loadLayersModel("file://./model/model.json");
 })();

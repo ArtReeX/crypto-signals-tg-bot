@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const toArray = (candle) => Object.values(candle).map((value) => 1 / Number(value));
-const toObject = (array) => ({
+exports.toArray = (candle) => Object.values(candle).map((value) => Number(value));
+exports.toObject = (array) => ({
     open: array[0],
     high: array[1],
     low: array[2],
@@ -12,5 +12,15 @@ const toObject = (array) => ({
     baseAssetVolume: array[7],
     quoteAssetVolume: array[8]
 });
-exports.default = { toArray, toObject };
+exports.normalize = (array) => {
+    const min = Math.min(...array);
+    const max = Math.max(...array);
+    return array.map((value) => (value - min) / (max - min));
+};
+exports.denormalize = (array) => {
+    const min = Math.min(...array);
+    const max = Math.max(...array);
+    return array.map((value) => value * (max - min) + min);
+};
+exports.default = { toArray: exports.toArray, toObject: exports.toObject, normalize: exports.normalize };
 //# sourceMappingURL=utilities.js.map
