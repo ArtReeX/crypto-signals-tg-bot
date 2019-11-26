@@ -6,14 +6,14 @@ class Scaler {
         this.min = Math.min(...this.array.flat(Infinity));
         this.max = Math.max(...this.array.flat(Infinity));
     }
-    normalized1d() {
-        return this.array.map((value) => (value - this.min) / (this.max - this.min));
+    normalize1d(array = this.array) {
+        return array.map((value) => (value - this.min) / (this.max - this.min));
     }
-    normalized2d() {
-        return this.array.map((depthOne) => depthOne.map((value) => (value - this.min) / (this.max - this.min)));
+    normalize2d(array = this.array) {
+        return array.map((depthOne) => depthOne.map((value) => (value - this.min) / (this.max - this.min)));
     }
-    normalized3d() {
-        return this.array.map((depthOne) => depthOne.map((depthTwo) => depthTwo.map((value) => (value - this.min) / (this.max - this.min))));
+    normalize3d(array = this.array) {
+        return array.map((depthOne) => depthOne.map((depthTwo) => depthTwo.map((value) => (value - this.min) / (this.max - this.min))));
     }
     denormalize1d(array) {
         return array.map((value) => value * (this.max - this.min) + this.min);

@@ -41,7 +41,7 @@ const run = async (samples, epochs = getConfig_1.default().tensorflow.epochs) =>
                 tf.layers.dropout({ rate: 0.2 }),
                 tf.layers.batchNormalization(),
                 tf.layers.dense({
-                    units: samples.y[0].length,
+                    units: samples.y[0].length * 2,
                     activation: "relu"
                 }),
                 tf.layers.dropout({ rate: 0.2 }),

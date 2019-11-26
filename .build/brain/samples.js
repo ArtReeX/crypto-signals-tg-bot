@@ -21,7 +21,7 @@ const create = (candles, sequence = getConfig_1.default().tensorflow.sequence) =
     const samples = { x: [], y: [] };
     const scaler = new normalization_1.default(candles.map((candle) => utilities_1.toArray(candle)));
     for (let count = 0; count + sequence < candles.length; count++) {
-        samples.x.push(scaler.normalized2d().slice(count, count + sequence - 1));
+        samples.x.push(scaler.normalize2d().slice(count, count + sequence - 1));
         samples.y.push(decision(candles.slice(count, count + sequence - 1), candles.slice(count + sequence - 1, count + sequence)));
     }
     return samples;

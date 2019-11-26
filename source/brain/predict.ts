@@ -15,7 +15,7 @@ export default (model: tf.LayersModel, candles: ICandle[]): Decision => {
   const scaler = new Scaler(candlesPart);
 
   const result: number[][] = (model.predict(
-    tf.tensor3d([scaler.normalized2d()])
+    tf.tensor3d([scaler.normalize2d()])
   ) as tf.Tensor<tf.Rank>).arraySync() as number[][];
 
   if (
