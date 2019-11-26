@@ -20,29 +20,29 @@ exports.default = (model, candles) => {
         .map(candle => utilities_1.toArray(candle))
         .slice(candles.length - getConfig_1.default().tensorflow.sequence + 1, candles.length);
     const scaler = new normalization_1.default(candlesPart);
-    const result = model.predict(tf.tensor3d([scaler.normalized2d()])).arraySync();
-    if (result[0][0] > result[0][1] &&
-        result[0][0] > result[0][2] &&
-        result[0][0] > result[0][3] &&
-        result[0][0] > result[0][4]) {
+    const [result] = model.predict(tf.tensor3d([scaler.normalize2d()])).arraySync();
+    if (result[0] > result[1] &&
+        result[0] > result[2] &&
+        result[0] > result[3] &&
+        result[0] > result[4]) {
         return types_1.Decision.ConfidentSale;
     }
-    else if (result[0][1] > result[0][0] &&
-        result[0][1] > result[0][2] &&
-        result[0][1] > result[0][3] &&
-        result[0][1] > result[0][4]) {
+    else if (result[1] > result[0] &&
+        result[1] > result[2] &&
+        result[1] > result[3] &&
+        result[1] > result[4]) {
         return types_1.Decision.InsecureSale;
     }
-    else if (result[0][3] > result[0][0] &&
-        result[0][3] > result[0][1] &&
-        result[0][3] > result[0][2] &&
-        result[0][3] > result[0][4]) {
+    else if (result[3] > result[0] &&
+        result[3] > result[1] &&
+        result[3] > result[2] &&
+        result[3] > result[4]) {
         return types_1.Decision.InsecurePurchase;
     }
-    else if (result[0][4] > result[0][0] &&
-        result[0][4] > result[0][1] &&
-        result[0][4] > result[0][2] &&
-        result[0][4] > result[0][3]) {
+    else if (result[4] > result[0] &&
+        result[4] > result[1] &&
+        result[4] > result[2] &&
+        result[4] > result[3]) {
         return types_1.Decision.ConfidentPurchase;
     }
     return types_1.Decision.Neutral;
