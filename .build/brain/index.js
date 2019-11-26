@@ -6,5 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const train_1 = __importDefault(require("./train"));
 const images_1 = __importDefault(require("./images"));
 const samples_1 = __importDefault(require("./samples"));
-exports.default = { train: train_1.default, images: images_1.default, samples: samples_1.default };
+const predict_1 = __importDefault(require("./predict"));
+exports.default = { train: train_1.default, images: images_1.default, samples: samples_1.default, predict: predict_1.default };
 //# sourceMappingURL=index.js.map

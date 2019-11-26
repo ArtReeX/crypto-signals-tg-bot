@@ -5,13 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const utilities_1 = require("./utilities");
 const getConfig_1 = __importDefault(require("../getConfig"));
+const normalization_1 = __importDefault(require("./normalization"));
+const decision = (first, last) => {
+    const percents = (first[first.length - 1].close - last[last.length - 1].close) /
+        last[last.length - 1].close;
+    if (Math.abs(percents) >= 0.05) {
+        return percents > 0 ? [0, 0, 0, 0, 1] : [1, 0, 0, 0, 0];
+    }
+    else if (Math.abs(percents) >= 0.01) {
+        return percents > 0 ? [0, 0, 0, 1, 0] : [0, 1, 0, 0, 0];
+    }
+    return [0, 0, 0, 0, 0];
+};
 const create = (candles, sequence = getConfig_1.default().tensorflow.sequence) => {
     const samples = { x: [], y: [] };
+    const scaler = new normalization_1.default(candles.map((candle) => utilities_1.toArray(candle)));
     for (let count = 0; count + sequence < candles.length; count++) {
-        samples.x.push(candles
-            .slice(count, count + sequence - 1)
-            .map(candle => utilities_1.normalize(utilities_1.toArray(candle))));
-        samples.y.push(utilities_1.normalize(utilities_1.toArray(candles[count + sequence - 1])));
+        samples.x.push(scaler.normalized2d().slice(count, count + sequence - 1));
+        samples.y.push(decision(candles.slice(count, count + sequence - 1), candles.slice(count + sequence - 1, count + sequence)));
     }
     return samples;
 };

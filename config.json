@@ -1,16 +1,24 @@
 {
   "tensorflow": {
-    "sequence": 10,
-    "epochs": 50
+    "sequence": 30,
+    "epochs": 10
   },
   "directions": [
     {
       "pair": "BTCUSDT",
-      "intervals": ["1m, 5m"]
+      "intervals": ["1m", "5m"]
     },
     {
       "pair": "ETHUSDT",
-      "intervals": ["10m, 15m"]
+      "intervals": ["5m", "15m"]
+    },
+    {
+      "pair": "LINKUSDT",
+      "intervals": ["30m"]
+    },
+    {
+      "pair": "FTMUSDC",
+      "intervals": ["5m"]
     }
   ]
 }

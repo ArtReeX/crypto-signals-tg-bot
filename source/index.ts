@@ -1,7 +1,8 @@
-import brain from "./brain";
-import { ISamples } from "./brain/types";
 import binance from "./binance";
-import { ICandle } from "./brain/types";
+import brain from "./brain";
+import { ICandle, ISamples } from "./brain/types";
+import getConfig from "./getConfig";
+import track from "./track";
 
 (async () => {
   if (!brain.images.exist()) {
@@ -11,10 +12,26 @@ import { ICandle } from "./brain/types";
     await brain.train.run(samples);
   }
 
-  try {
-    const model = await brain.images.load();
-    console.info("Neural network snapshot loaded successfully.");
-  } catch ({ message }) {
-    throw new Error(`Failed to load neural network image: ${message}`);
-  }
+  await brain.images
+    .load()
+    .then(model => {
+      console.info("Neural network snapshot loaded successfully.");
+
+      setInterval(() => {
+        getConfig().directions.forEach(direction => {
+          direction.intervals.forEach(async interval => {
+            track(model, direction.pair, interval).catch(
+              ({ message }: Error) => {
+                console.error(
+                  `Failed to get direction information ${direction.pair} with interval ${interval}: ${message}.`
+                );
+              }
+            );
+          });
+        });
+      }, 60 * 1000);
+    })
+    .catch(({ message }) => {
+      throw new Error(`Failed to load neural network image: ${message}`);
+    });
 })();

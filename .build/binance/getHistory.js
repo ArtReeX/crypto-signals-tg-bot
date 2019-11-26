@@ -47,8 +47,8 @@ exports.default = async (symbol, interval, allTime = false) => {
         low: candle[3],
         close: candle[4],
         volume: candle[5],
+        trades: candle[6],
         quoteVolume: candle[7],
-        trades: candle[8],
         baseAssetVolume: candle[9],
         quoteAssetVolume: candle[10]
     }));

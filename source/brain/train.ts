@@ -18,34 +18,47 @@ const run = async (
     const model = tf.sequential({
       layers: [
         tf.layers.lstm({
-          inputShape: [samples.x[0][0].length, samples.x[0][0].length],
+          inputShape: [samples.x[0].length, samples.x[0][0].length],
           units: samples.x[0].length * samples.x[0][0].length,
           returnSequences: true
         }),
         tf.layers.dropout({ rate: 0.2 }),
+        tf.layers.batchNormalization(),
         tf.layers.lstm({
-          units: samples.x[0].length * samples.x[0][0].length * 2,
+          units: samples.x[0].length * samples.x[0][0].length,
           returnSequences: true
         }),
         tf.layers.dropout({ rate: 0.2 }),
+        tf.layers.batchNormalization(),
         tf.layers.lstm({
           units: samples.x[0].length * samples.x[0][0].length,
           returnSequences: false
         }),
         tf.layers.dropout({ rate: 0.2 }),
-        tf.layers.dense({ units: samples.x[0][0].length, activation: "linear" })
+        tf.layers.batchNormalization(),
+        tf.layers.dense({
+          units: samples.y[0].length * 2,
+          activation: "relu"
+        }),
+        tf.layers.dropout({ rate: 0.2 }),
+        tf.layers.batchNormalization(),
+        tf.layers.dense({
+          units: samples.y[0].length,
+          activation: "softmax"
+        })
       ]
     });
 
     model.compile({
       optimizer: "adam",
-      loss: tf.losses.meanSquaredError,
-      metrics: tf.metrics.meanSquaredError
+      loss: tf.losses.softmaxCrossEntropy,
+      metrics: tf.metrics.categoricalCrossentropy
     });
 
     await model.fit(xTrain, yTrain, {
       epochs,
       shuffle: false,
+      batchSize: 64,
       validationData: [xTest, yTest],
       callbacks: {
         onTrainBegin: () =>

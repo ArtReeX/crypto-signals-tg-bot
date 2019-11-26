@@ -12,15 +12,5 @@ exports.toObject = (array) => ({
     baseAssetVolume: array[7],
     quoteAssetVolume: array[8]
 });
-exports.normalize = (array) => {
-    const min = Math.min(...array);
-    const max = Math.max(...array);
-    return array.map((value) => (value - min) / (max - min));
-};
-exports.denormalize = (array) => {
-    const min = Math.min(...array);
-    const max = Math.max(...array);
-    return array.map((value) => value * (max - min) + min);
-};
-exports.default = { toArray: exports.toArray, toObject: exports.toObject, normalize: exports.normalize };
+exports.default = { toArray: exports.toArray, toObject: exports.toObject };
 //# sourceMappingURL=utilities.js.map

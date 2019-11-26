@@ -15,18 +15,4 @@ export const toObject = (array: number[]): ICandle => ({
   quoteAssetVolume: array[8]
 });
 
-export const normalize = (array: number[]): number[] => {
-  const min = Math.min(...array);
-  const max = Math.max(...array);
-
-  return array.map((value: number) => (value - min) / (max - min));
-};
-
-export const denormalize = (array: number[]): number[] => {
-  const min = Math.min(...array);
-  const max = Math.max(...array);
-
-  return array.map((value: number) => value * (max - min) + min);
-};
-
-export default { toArray, toObject, normalize };
+export default { toArray, toObject };

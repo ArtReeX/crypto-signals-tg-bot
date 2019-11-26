@@ -1,9 +1,9 @@
 export enum Decision {
-  ConfidentPurchase = 4,
-  InsecurePurchase = 3,
-  Neutral = 2,
-  InsecureSale = 1,
-  ConfidentSale = 0
+  ConfidentPurchase = 2,
+  InsecurePurchase = 1,
+  Neutral = 0,
+  InsecureSale = -1,
+  ConfidentSale = -2
 }
 
 export interface ICandle {
@@ -12,8 +12,8 @@ export interface ICandle {
   low: number;
   close: number;
   volume: number;
-  quoteVolume: number;
   trades: number;
+  quoteVolume: number;
   baseAssetVolume: number;
   quoteAssetVolume: number;
 }

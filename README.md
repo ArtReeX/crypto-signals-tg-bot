@@ -26,11 +26,11 @@ A bot for Telegram based on a neural network that displays signals for the purch
 "directions": [
     {
       "pair": "BTCUSDT",
-      "intervals": ["1m, 5m"]
+      "intervals": ["1m", "5m"]
     },
     {
       "pair": "ETHUSDT",
-      "intervals": ["1d, 1w"]
+      "intervals": ["1d", "1w"]
     },
     ...
   ]

@@ -10,8 +10,8 @@ interface ICandle {
   low: number;
   close: number;
   volume: number;
-  quoteVolume: number;
   trades: number;
+  quoteVolume: number;
   baseAssetVolume: number;
   quoteAssetVolume: number;
 }
@@ -81,8 +81,8 @@ export default async (
       low: candle[3],
       close: candle[4],
       volume: candle[5],
+      trades: candle[6],
       quoteVolume: candle[7],
-      trades: candle[8],
       baseAssetVolume: candle[9],
       quoteAssetVolume: candle[10]
     })
