@@ -7,7 +7,7 @@ const brain_1 = __importDefault(require("./brain"));
 const binance_1 = __importDefault(require("./binance"));
 (async () => {
     if (!brain_1.default.images.exist()) {
-        const history = await binance_1.default.getHistory("BTCUSDT", "15m");
+        const history = await binance_1.default.getHistory("BTCUSDT", "2h", true);
         const samples = brain_1.default.samples.create(history);
         await brain_1.default.train.run(samples);
     }

@@ -7,7 +7,7 @@ const run = async (
   epochs: number = getConfig().tensorflow.epochs
 ): Promise<void> => {
   try {
-    const sizeTrain = samples.x.length * 0.7;
+    const sizeTrain = Math.ceil(samples.x.length * 0.7);
 
     const xTrain = tf.tensor3d(samples.x.slice(0, sizeTrain));
     const yTrain = tf.tensor2d(samples.y.slice(0, sizeTrain));
@@ -48,7 +48,10 @@ const run = async (
       shuffle: false,
       validationData: [xTest, yTest],
       callbacks: {
-        onTrainBegin: () => console.info("Neural network training started."),
+        onTrainBegin: () =>
+          console.info(
+            `Neural network training based on ${sizeTrain} templates has been launched.`
+          ),
         onTrainEnd: () => console.info("Neural network training completed.")
       }
     });

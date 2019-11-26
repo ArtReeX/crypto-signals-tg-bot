@@ -5,7 +5,7 @@ import { ICandle } from "./brain/types";
 
 (async () => {
   if (!brain.images.exist()) {
-    const history: ICandle[] = await binance.getHistory("BTCUSDT", "15m");
+    const history: ICandle[] = await binance.getHistory("BTCUSDT", "2h", true);
     const samples: ISamples = brain.samples.create(history);
 
     await brain.train.run(samples);

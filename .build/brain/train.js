@@ -14,7 +14,7 @@ const tf = __importStar(require("@tensorflow/tfjs-node"));
 const getConfig_1 = __importDefault(require("../getConfig"));
 const run = async (samples, epochs = getConfig_1.default().tensorflow.epochs) => {
     try {
-        const sizeTrain = samples.x.length * 0.7;
+        const sizeTrain = Math.ceil(samples.x.length * 0.7);
         const xTrain = tf.tensor3d(samples.x.slice(0, sizeTrain));
         const yTrain = tf.tensor2d(samples.y.slice(0, sizeTrain));
         const xTest = tf.tensor3d(samples.x.slice(sizeTrain, samples.x.length));
@@ -50,7 +50,7 @@ const run = async (samples, epochs = getConfig_1.default().tensorflow.epochs) =>
             shuffle: false,
             validationData: [xTest, yTest],
             callbacks: {
-                onTrainBegin: () => console.info("Neural network training started."),
+                onTrainBegin: () => console.info(`Neural network training based on ${sizeTrain} templates has been launched.`),
                 onTrainEnd: () => console.info("Neural network training completed.")
             }
         });
