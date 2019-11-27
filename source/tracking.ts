@@ -5,7 +5,7 @@ import brain from "./brain";
 import { Decision, ICandle } from "./brain/types";
 import { IDirections, Symbol } from "./getConfig";
 
-const lastDecisions: { [key: string]: Decision } = {};
+const lastDecisions: { [key: string]: { [key: string]: Decision } } = {};
 
 export default async (model: tf.LayersModel, directions: IDirections) => {
   for (let symbol in directions) {
@@ -18,8 +18,8 @@ export default async (model: tf.LayersModel, directions: IDirections) => {
 
         const decision = brain.predict(model, candles);
 
-        if (decision !== lastDecisions[symbol]) {
-          lastDecisions[symbol] = decision;
+        if (decision !== lastDecisions[symbol][interval]) {
+          lastDecisions[symbol][interval] = decision;
         } else {
           continue;
         }
