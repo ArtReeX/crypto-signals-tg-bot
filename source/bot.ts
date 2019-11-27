@@ -5,7 +5,7 @@ const {
   telegram: { token, chat }
 } = getConfig();
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, { polling: false });
 
 const sendMessage = (message: string) => bot.sendMessage(chat, message);
 
