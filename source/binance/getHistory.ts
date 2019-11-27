@@ -25,7 +25,7 @@ interface IParams {
 }
 
 const subtract = (time: moment.Moment, interval: Interval): moment.Moment => {
-  const unit: number = Number(interval.replace(/\D/, "")) * 500;
+  const unit: number = Number(interval.replace(/\D/, "")) * 1000;
 
   if (interval.includes("m")) {
     return moment(time).subtract(unit, "minute");
@@ -65,7 +65,7 @@ export default async (
       params: {
         symbol,
         interval,
-        limit: 500,
+        limit: 1000,
         startTime: subtract(time, interval).valueOf(),
         endTime: time.valueOf()
       } as IParams
