@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const getConfig_1 = __importDefault(require("./getConfig"));
 const { telegram: { token, chat } } = getConfig_1.default();
-const bot = new node_telegram_bot_api_1.default(token, { polling: true });
+const bot = new node_telegram_bot_api_1.default(token, { polling: false });
 const sendMessage = (message) => bot.sendMessage(chat, message);
 exports.default = { sendMessage };
 //# sourceMappingURL=bot.js.map
