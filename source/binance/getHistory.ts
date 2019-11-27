@@ -78,6 +78,9 @@ export default async (
     candles.push(...(result.data as number[][]));
   }
 
+  // delete current candle
+  candles.pop();
+
   return candles.reverse().map(
     (candle: number[]): ICandle => ({
       open: candle[1],

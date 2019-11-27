@@ -25,7 +25,7 @@ const run = async (
         tf.layers.dropout({ rate: 0.2 }),
         tf.layers.batchNormalization(),
         tf.layers.lstm({
-          units: samples.x[0].length * samples.x[0][0].length,
+          units: samples.x[0].length * samples.x[0][0].length * 2,
           returnSequences: true
         }),
         tf.layers.dropout({ rate: 0.2 }),
