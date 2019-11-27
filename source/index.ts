@@ -1,7 +1,7 @@
 import binance from "./binance";
 import brain from "./brain";
 import { ICandle, ISamples } from "./brain/types";
-import getConfig, { Symbol } from "./getConfig";
+import getConfig, { Symbol } from "./config";
 import tracking from "./tracking";
 
 const {
@@ -21,9 +21,9 @@ const {
     const model = await brain.images.load();
     console.info("Neural network snapshot loaded successfully.");
 
-    tracking(model, directions);
+    tracking(model, directions, sequence);
     setInterval(async () => {
-      tracking(model, directions);
+      tracking(model, directions, sequence);
     }, 60 * 1000);
 
     console.info("Neural bot launched successfully.");

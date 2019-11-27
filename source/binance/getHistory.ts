@@ -1,4 +1,4 @@
-import { Symbol, Interval } from "../getConfig";
+import { Symbol, Interval } from "../config";
 import axios from "axios";
 import moment from "moment";
 

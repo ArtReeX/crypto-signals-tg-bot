@@ -2,12 +2,24 @@ import * as tf from "@tensorflow/tfjs-node";
 import binance from "./binance";
 import bot from "./bot";
 import brain from "./brain";
-import { Decision, ICandle } from "./brain/types";
-import { IDirections, Symbol } from "./getConfig";
+import { ICandle } from "./brain/types";
+import { IDirections, Symbol } from "./config";
 
-const lastDecisions: { [key: string]: Decision } = {};
+const decisions = [
+  "уверенная продажа",
+  "неуверенная продажа",
+  "нейтрально",
+  "неуверенная покупка",
+  "уверенная покупка"
+];
 
-export default async (model: tf.LayersModel, directions: IDirections) => {
+const lastDecistions: { [key: string]: number } = {};
+
+export default async (
+  model: tf.LayersModel,
+  directions: IDirections,
+  sequence: number
+) => {
   for (let symbol in directions) {
     for (let interval of directions[symbol].intervals) {
       try {
@@ -16,46 +28,19 @@ export default async (model: tf.LayersModel, directions: IDirections) => {
           interval
         );
 
-        const decision = brain.predict(model, candles);
+        const decision = brain.predict(model, candles, sequence);
+        const decisionPosition = decision.indexOf(Math.max(...decision));
 
-        if (decision !== lastDecisions[symbol + interval]) {
-          lastDecisions[symbol + interval] = decision;
+        if (lastDecistions[symbol + interval] !== decisionPosition) {
+          lastDecistions[symbol + interval] = decisionPosition;
         } else {
           continue;
         }
 
-        switch (decision) {
-          case Decision.ConfidentSale: {
-            bot.sendMessage(
-              `The direction ${symbol} with the interval ${interval} is a sure sale.`
-            );
-            break;
-          }
-          case Decision.InsecureSale: {
-            bot.sendMessage(
-              `The direction ${symbol} with the interval ${interval} is an uncertain sale.`
-            );
-            break;
-          }
-          case Decision.ConfidentPurchase: {
-            bot.sendMessage(
-              `The direction ${symbol} with the interval ${interval} is a sure buy.`
-            );
-            break;
-          }
-          case Decision.InsecurePurchase: {
-            bot.sendMessage(
-              `The direction ${symbol} with the interval ${interval} is an uncertain purchase.`
-            );
-            break;
-          }
-          default: {
-            bot.sendMessage(
-              `The direction ${symbol} with the interval ${interval} is neutral.`
-            );
-            break;
-          }
-        }
+        bot.sendMessage(
+          `Направление ${symbol} и интервал ${interval}, решение нейронной сети:
+          - ${decisions[decisionPosition]}`
+        );
       } catch ({ message }) {
         console.error(
           `Failed to get direction information ${symbol} with interval ${interval}: ${message}.`

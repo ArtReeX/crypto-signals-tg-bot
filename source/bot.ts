@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import getConfig from "./getConfig";
+import getConfig from "./config";
 
 const {
   telegram: { token, chat }

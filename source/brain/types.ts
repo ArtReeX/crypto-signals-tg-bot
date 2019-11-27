@@ -1,11 +1,3 @@
-export enum Decision {
-  ConfidentPurchase = 2,
-  InsecurePurchase = 1,
-  Neutral = 0,
-  InsecureSale = -1,
-  ConfidentSale = -2
-}
-
 export interface ICandle {
   open: number;
   high: number;

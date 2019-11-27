@@ -1,7 +1,5 @@
-import { ICandle, ISamples, Decision } from "./types";
+import { ICandle, ISamples } from "./types";
 import { toArray } from "./utilities";
-import getConfig from "../getConfig";
-import Scaler from "./normalization";
 
 const decision = (
   first: ICandle[],
@@ -22,10 +20,10 @@ const decision = (
 
 const create = (candles: ICandle[], sequence: number): ISamples => {
   const samples: ISamples = { x: [], y: [] };
-  const scaler = new Scaler(candles.map((candle: ICandle) => toArray(candle)));
+  const candlesArray = candles.map((candle: ICandle) => toArray(candle));
 
   for (let count = 0; count + sequence < candles.length; count++) {
-    samples.x.push(scaler.normalize2d().slice(count, count + sequence - 1));
+    samples.x.push(candlesArray.slice(count, count + sequence - 1));
     samples.y.push(
       decision(
         candles.slice(count, count + sequence - 1),

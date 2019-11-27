@@ -1,52 +1,22 @@
 import * as tf from "@tensorflow/tfjs-node";
-import { ICandle, Decision } from "./types";
-import { toArray, toObject } from "./utilities";
-import getConfig from "../getConfig";
-import Scaler from "./normalization";
+import { ICandle } from "./types";
+import { toArray } from "./utilities";
 
-export default (model: tf.LayersModel, candles: ICandle[]): Decision => {
+export default (
+  model: tf.LayersModel,
+  candles: ICandle[],
+  sequence: number
+): number[] => {
   const candlesPart: number[][] = candles
     .map(candle => toArray(candle))
-    .slice(
-      candles.length - getConfig().tensorflow.sequence + 1,
-      candles.length
-    );
-
-  const scaler = new Scaler(candlesPart);
+    .slice(candles.length - sequence + 1, candles.length);
 
   const [result]: number[][] = (model.predict(
-    tf.tensor3d([scaler.normalize2d()])
+    tf.constraints
+      .minMaxNorm({ minValue: 0, maxValue: 1 })
+      .apply(tf.tensor2d(candlesPart))
+      .as3D(1, candlesPart.length, candlesPart[0].length)
   ) as tf.Tensor<tf.Rank>).arraySync() as number[][];
-
-  if (
-    result[0] > result[1] &&
-    result[0] > result[2] &&
-    result[0] > result[3] &&
-    result[0] > result[4]
-  ) {
-    return Decision.ConfidentSale;
-  } else if (
-    result[1] > result[0] &&
-    result[1] > result[2] &&
-    result[1] > result[3] &&
-    result[1] > result[4]
-  ) {
-    return Decision.InsecureSale;
-  } else if (
-    result[3] > result[0] &&
-    result[3] > result[1] &&
-    result[3] > result[2] &&
-    result[3] > result[4]
-  ) {
-    return Decision.InsecurePurchase;
-  } else if (
-    result[4] > result[0] &&
-    result[4] > result[1] &&
-    result[4] > result[2] &&
-    result[4] > result[3]
-  ) {
-    return Decision.ConfidentPurchase;
-  }
-
-  return Decision.Neutral;
+  console.log(result.toString());
+  return result;
 };
