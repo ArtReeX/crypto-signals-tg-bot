@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const utilities_1 = require("./utilities");
-const getConfig_1 = __importDefault(require("../getConfig"));
 const normalization_1 = __importDefault(require("./normalization"));
 const decision = (first, last) => {
     const percents = (first[first.length - 1].close - last[last.length - 1].close) /
@@ -17,7 +16,7 @@ const decision = (first, last) => {
     }
     return [0, 0, 0, 0, 0];
 };
-const create = (candles, sequence = getConfig_1.default().tensorflow.sequence) => {
+const create = (candles, sequence) => {
     const samples = { x: [], y: [] };
     const scaler = new normalization_1.default(candles.map((candle) => utilities_1.toArray(candle)));
     for (let count = 0; count + sequence < candles.length; count++) {

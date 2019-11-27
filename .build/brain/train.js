@@ -59,7 +59,6 @@ const run = async (samples, epochs = getConfig_1.default().tensorflow.epochs) =>
         });
         await model.fit(xTrain, yTrain, {
             epochs,
-            shuffle: false,
             batchSize: 64,
             validationData: [xTest, yTest],
             callbacks: {

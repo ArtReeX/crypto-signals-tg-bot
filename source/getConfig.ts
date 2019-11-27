@@ -17,14 +17,20 @@ export type Interval =
   | "1w"
   | "1M";
 
+export interface IDirections {
+  [key: string]: { intervals: [Interval] };
+}
+
 interface IConfig {
   tensorflow: {
     sequence: number;
     epochs: number;
   };
-  directions: {
-    [key: string]: { intervals: [Interval] };
+  telegram: {
+    token: string;
+    chat: number;
   };
+  directions: IDirections;
 }
 
 export default (): IConfig => config;

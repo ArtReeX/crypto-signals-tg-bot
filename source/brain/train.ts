@@ -57,7 +57,6 @@ const run = async (
 
     await model.fit(xTrain, yTrain, {
       epochs,
-      shuffle: false,
       batchSize: 64,
       validationData: [xTest, yTest],
       callbacks: {

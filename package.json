@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/ArtReeX/crypto-signals-tg-bot#readme",
   "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.40.0",
     "nodemon": "^2.0.1",
     "typescript": "^3.7.2"
   },

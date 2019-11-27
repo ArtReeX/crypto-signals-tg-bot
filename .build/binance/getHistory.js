@@ -35,7 +35,11 @@ exports.default = async (symbol, interval, allTime = false) => {
                 symbol,
                 interval,
                 limit: 1000,
-                startTime: subtract(time, interval).valueOf(),
+                startTime: subtract(time, interval).isSameOrAfter("2000-01-01")
+                    ? subtract(time, interval).valueOf()
+                    : moment_1.default()
+                        .subtract(2, "year")
+                        .valueOf(),
                 endTime: time.valueOf()
             }
         });

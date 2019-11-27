@@ -17,6 +17,18 @@ A bot for Telegram based on a neural network that displays signals for the purch
 },
 ```
 
+### telegram
+
+- **token** - token bot
+- **chat** - chat ID (api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/getUpdates)
+
+```json
+"telegram": {
+  "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
+  "chat": -1001158670090
+},
+```
+
 ### directions
 
 - **intervals** - tracking intervals

@@ -66,7 +66,11 @@ export default async (
         symbol,
         interval,
         limit: 1000,
-        startTime: subtract(time, interval).valueOf(),
+        startTime: subtract(time, interval).isSameOrAfter("2000-01-01")
+          ? subtract(time, interval).valueOf()
+          : moment()
+              .subtract(2, "year")
+              .valueOf(),
         endTime: time.valueOf()
       } as IParams
     });

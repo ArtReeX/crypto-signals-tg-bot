@@ -20,10 +20,7 @@ const decision = (
   return [0, 0, 0, 0, 0];
 };
 
-const create = (
-  candles: ICandle[],
-  sequence: number = getConfig().tensorflow.sequence
-): ISamples => {
+const create = (candles: ICandle[], sequence: number): ISamples => {
   const samples: ISamples = { x: [], y: [] };
   const scaler = new Scaler(candles.map((candle: ICandle) => toArray(candle)));
 

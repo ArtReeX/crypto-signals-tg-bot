@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const types_1 = require("./brain/types");
 const binance_1 = __importDefault(require("./binance"));
 const brain_1 = __importDefault(require("./brain"));
+const bot_1 = __importDefault(require("./bot"));
+bot_1.default.sendMessage("ji");
 exports.default = async (model, symbol, interval) => {
     const candles = await binance_1.default.getHistory(symbol, interval);
     const decision = brain_1.default.predict(model, candles);
