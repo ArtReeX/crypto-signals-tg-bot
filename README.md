@@ -19,20 +19,17 @@ A bot for Telegram based on a neural network that displays signals for the purch
 
 ### directions
 
-- **pair** - name of the pair to track
 - **intervals** - tracking intervals
 
 ```json
-"directions": [
-    {
-      "pair": "BTCUSDT",
+"directions": {
+    "BTCUSDT": {
       "intervals": ["1m", "5m"]
     },
-    {
-      "pair": "ETHUSDT",
+    "ETHUSD": {
       "intervals": ["1d", "1w"]
     },
     ...
-  ]
+  }
 },
 ```

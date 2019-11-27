@@ -1,7 +1,7 @@
 import binance from "./binance";
 import brain from "./brain";
 import { ICandle, ISamples } from "./brain/types";
-import getConfig from "./getConfig";
+import getConfig, { Symbol } from "./getConfig";
 import track from "./track";
 
 (async () => {
@@ -17,18 +17,18 @@ import track from "./track";
     .then(model => {
       console.info("Neural network snapshot loaded successfully.");
 
-      setInterval(() => {
-        getConfig().directions.forEach(direction => {
-          direction.intervals.forEach(async interval => {
-            track(model, direction.pair, interval).catch(
+      setInterval(async () => {
+        for (let symbol in getConfig().directions) {
+          for (let interval of getConfig().directions[symbol].intervals) {
+            track(model, symbol as Symbol, interval).catch(
               ({ message }: Error) => {
                 console.error(
-                  `Failed to get direction information ${direction.pair} with interval ${interval}: ${message}.`
+                  `Failed to get direction information ${symbol} with interval ${interval}: ${message}.`
                 );
               }
             );
-          });
-        });
+          }
+        }
       }, 60 * 1000);
     })
     .catch(({ message }) => {

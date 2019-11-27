@@ -23,9 +23,8 @@ interface IConfig {
     epochs: number;
   };
   directions: {
-    pair: Symbol;
-    intervals: [Interval];
-  }[];
+    [key: string]: { intervals: [Interval] };
+  };
 }
 
 export default (): IConfig => config;

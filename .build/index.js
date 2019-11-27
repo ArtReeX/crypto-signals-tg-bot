@@ -17,14 +17,14 @@ const track_1 = __importDefault(require("./track"));
         .load()
         .then(model => {
         console.info("Neural network snapshot loaded successfully.");
-        setInterval(() => {
-            getConfig_1.default().directions.forEach(direction => {
-                direction.intervals.forEach(async (interval) => {
-                    track_1.default(model, direction.pair, interval).catch(({ message }) => {
-                        console.error(`Failed to get direction information ${direction.pair} with interval ${interval}: ${message}.`);
+        setInterval(async () => {
+            for (let symbol in getConfig_1.default().directions) {
+                for (let interval of getConfig_1.default().directions[symbol].intervals) {
+                    track_1.default(model, symbol, interval).catch(({ message }) => {
+                        console.error(`Failed to get direction information ${symbol} with interval ${interval}: ${message}.`);
                     });
-                });
-            });
+                }
+            }
         }, 60 * 1000);
     })
         .catch(({ message }) => {
