@@ -14,8 +14,8 @@ exports.default = async (model, directions) => {
             try {
                 const candles = await binance_1.default.getHistory(symbol, interval);
                 const decision = brain_1.default.predict(model, candles);
-                if (decision !== lastDecisions[symbol][interval]) {
-                    lastDecisions[symbol][interval] = decision;
+                if (decision !== lastDecisions[symbol + interval]) {
+                    lastDecisions[symbol + interval] = decision;
                 }
                 else {
                     continue;
