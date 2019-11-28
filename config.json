@@ -1,6 +1,6 @@
 {
   "tensorflow": {
-    "sequence": 20,
+    "sequence": 30,
     "epochs": 20
   },
   "telegram": {
@@ -9,7 +9,7 @@
   },
   "directions": {
     "BTCUSDT": {
-      "intervals": ["1m", "5m", "15m"]
+      "intervals": ["1m"]
     }
   }
 }

@@ -1,5 +1,6 @@
 import { ICandle, ISamples } from "./types";
 import { toArray } from "./utilities";
+import Scaler from "./normalization";
 
 const decision = (
   first: ICandle[],
@@ -20,14 +21,17 @@ const decision = (
 
 const create = (candles: ICandle[], sequence: number): ISamples => {
   const samples: ISamples = { x: [], y: [] };
-  const candlesArray = candles.map((candle: ICandle) => toArray(candle));
 
   for (let count = 0; count + sequence < candles.length; count++) {
-    samples.x.push(candlesArray.slice(count, count + sequence - 1));
+    samples.x.push(
+      candles
+        .slice(count, count + sequence - 1)
+        .map((candle: ICandle) => toArray(candle))
+    );
     samples.y.push(
       decision(
-        candles.slice(count, count + sequence - 1),
-        candles.slice(count + sequence - 1, count + sequence)
+        candles.slice(count, count + sequence - 2),
+        candles.slice(count, count + sequence - 1)
       )
     );
   }

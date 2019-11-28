@@ -1,64 +1,59 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ISamples } from "./types";
 import getConfig from "../config";
+import norm from "./normalization";
+import { Tensor1D, Tensor, Rank } from "@tensorflow/tfjs-node";
 
 const run = async (
   samples: ISamples,
   epochs: number = getConfig().tensorflow.epochs
 ): Promise<void> => {
   try {
-    const sizeTrain = Math.ceil(samples.x.length * 0.7);
+    const scale = norm.scale3d(samples.x);
 
-    const xTrain = tf.constraints
-      .minMaxNorm({ minValue: 0, maxValue: 1 })
-      .apply(tf.tensor3d(samples.x));
-    const yTrain = tf.tensor2d(samples.y);
+    const xTrain = tf.tensor3d(norm.normalize3d(samples.x, scale));
+    const yTrain = tf.tensor2d(norm.normalize2d(samples.y, scale));
 
     const model = tf.sequential({
       layers: [
-        tf.layers.lstm({
-          inputShape: [samples.x[0].length, samples.x[0][0].length],
-          units: samples.x[0].length * samples.x[0][0].length,
-          returnSequences: true
-        }),
-        tf.layers.dropout({ rate: 0.2 }),
-        tf.layers.batchNormalization(),
-
-        tf.layers.lstm({
-          units: samples.x[0].length * samples.x[0][0].length * 2,
-          returnSequences: true
-        }),
-        tf.layers.dropout({ rate: 0.2 }),
-        tf.layers.batchNormalization(),
-
-        tf.layers.lstm({
-          units: samples.x[0].length * samples.x[0][0].length,
-          returnSequences: false
-        }),
-        tf.layers.dropout({ rate: 0.2 }),
-        tf.layers.batchNormalization(),
+        tf.layers.flatten({ inputShape: [xTrain.shape[1], xTrain.shape[2]] }),
 
         tf.layers.dense({
-          units: samples.y[0].length,
-          activation: "softmax"
+          units: xTrain.shape[1] * xTrain.shape[2],
+          activation: "relu"
+        }),
+        tf.layers.dropout({ rate: 0.2 }),
+
+        tf.layers.dense({
+          units: xTrain.shape[1] * xTrain.shape[2] * 2,
+          activation: "relu"
+        }),
+        tf.layers.dropout({ rate: 0.2 }),
+
+        tf.layers.dense({
+          units: yTrain.shape[1],
+          activation: "sigmoid"
         })
       ]
     });
 
+    model.summary();
+
     model.compile({
-      optimizer: "adam",
+      optimizer: tf.train.adam(0.01),
       loss: tf.metrics.categoricalCrossentropy,
       metrics: tf.metrics.categoricalAccuracy
     });
 
     await model.fit(xTrain, yTrain, {
       epochs,
+      shuffle: false,
       batchSize: 64,
       validationSplit: 0.3,
       callbacks: {
         onTrainBegin: () =>
           console.info(
-            `Neural network training based on ${sizeTrain} templates has been launched.`
+            `The neural network began training based on ${xTrain.shape[0]} templates.`
           ),
         onTrainEnd: () => console.info("Neural network training completed.")
       }

@@ -13,8 +13,6 @@ const decisions = [
   "уверенная покупка"
 ];
 
-const lastDecistions: { [key: string]: number } = {};
-
 export default async (
   model: tf.LayersModel,
   directions: IDirections,
@@ -28,18 +26,23 @@ export default async (
           interval
         );
 
-        const decision = brain.predict(model, candles, sequence);
-        const decisionPosition = decision.indexOf(Math.max(...decision));
-
-        if (lastDecistions[symbol + interval] !== decisionPosition) {
-          lastDecistions[symbol + interval] = decisionPosition;
-        } else {
-          continue;
-        }
+        const [
+          confirmedSale,
+          unconfirmedSale,
+          neutral,
+          unconfirmedPurshapse,
+          confirmedPurshapse
+        ] = brain
+          .predict(model, candles, sequence)
+          .map(percent => (percent * 100).toFixed(2));
 
         bot.sendMessage(
-          `Направление ${symbol} и интервал ${interval}, решение нейронной сети:
-          - ${decisions[decisionPosition]}`
+          `Направление ${symbol} и интервал ${interval}, возможные развития:
+          - точно вверх: \t ${confirmedPurshapse} %
+          - неточно вверх: \t ${unconfirmedPurshapse} %
+          - нейтрально: \t ${neutral} %
+          - неточно вниз: \t ${unconfirmedSale} %
+          - точно вниз: \t ${confirmedSale} %`
         );
       } catch ({ message }) {
         console.error(
