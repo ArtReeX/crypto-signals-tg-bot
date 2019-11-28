@@ -1,7 +1,7 @@
 {
   "tensorflow": {
     "sequence": 30,
-    "epochs": 20
+    "epochs": 10
   },
   "telegram": {
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",

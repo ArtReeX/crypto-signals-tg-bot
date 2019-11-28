@@ -12,7 +12,7 @@ const run = async (
     const scale = norm.scale3d(samples.x);
 
     const xTrain = tf.tensor3d(norm.normalize3d(samples.x, scale));
-    const yTrain = tf.tensor2d(norm.normalize2d(samples.y, scale));
+    const yTrain = tf.tensor2d(samples.y);
 
     const model = tf.sequential({
       layers: [
@@ -25,14 +25,8 @@ const run = async (
         tf.layers.dropout({ rate: 0.2 }),
 
         tf.layers.dense({
-          units: xTrain.shape[1] * xTrain.shape[2] * 2,
-          activation: "relu"
-        }),
-        tf.layers.dropout({ rate: 0.2 }),
-
-        tf.layers.dense({
           units: yTrain.shape[1],
-          activation: "sigmoid"
+          activation: "softmax"
         })
       ]
     });

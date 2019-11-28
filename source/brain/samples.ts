@@ -30,8 +30,8 @@ const create = (candles: ICandle[], sequence: number): ISamples => {
     );
     samples.y.push(
       decision(
-        candles.slice(count, count + sequence - 2),
-        candles.slice(count, count + sequence - 1)
+        candles.slice(count, count + sequence - 1),
+        candles.slice(count + sequence - 1, count + sequence)
       )
     );
   }
