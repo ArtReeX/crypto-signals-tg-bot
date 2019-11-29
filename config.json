@@ -1,7 +1,8 @@
 {
   "tensorflow": {
-    "sequence": 30,
-    "epochs": 10
+    "seqPast": 500,
+    "seqFuture": 1,
+    "epochs": 5
   },
   "telegram": {
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
@@ -9,7 +10,13 @@
   },
   "directions": {
     "BTCUSDT": {
-      "intervals": ["1m"]
+      "intervals": ["15m", "1h"]
+    },
+    "LTCUSDT": {
+      "intervals": ["1h"]
+    },
+    "ETHUSDT": {
+      "intervals": ["1h"]
     }
   }
 }

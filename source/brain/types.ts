@@ -1,16 +1,18 @@
 export interface ICandle {
+  openTime: number;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
-  trades: number;
-  quoteVolume: number;
-  baseAssetVolume: number;
+  closeTime: number;
   quoteAssetVolume: number;
+  trades: number;
+  takeBaseAssetVolume: number;
+  takeQuoteAssetVolume: number;
 }
 
 export interface ISamples {
-  x: number[][][];
-  y: number[][];
+  xs: number[][][];
+  ys: number[][][];
 }

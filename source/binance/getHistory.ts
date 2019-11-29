@@ -2,18 +2,18 @@ import { Symbol, Interval } from "../config";
 import axios from "axios";
 import moment from "moment";
 
-const URL = "https://api.binance.com/api/v3";
-
 interface ICandle {
+  openTime: number;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
-  trades: number;
-  quoteVolume: number;
-  baseAssetVolume: number;
+  closeTime: number;
   quoteAssetVolume: number;
+  trades: number;
+  takeBaseAssetVolume: number;
+  takeQuoteAssetVolume: number;
 }
 
 interface IParams {
@@ -49,19 +49,19 @@ const subtract = (time: moment.Moment, interval: Interval): moment.Moment => {
 export default async (
   symbol: Symbol,
   interval: Interval,
-  allTime: boolean = false
+  full: boolean = false
 ): Promise<ICandle[]> => {
   let candles: number[][] = [];
 
   for (
     let time = moment(),
-      lowerBound = allTime
-        ? moment().subtract(2, "year")
+      lowerBound = full
+        ? moment().subtract(5, "year")
         : subtract(time, interval);
     time.isSameOrAfter(lowerBound) && time.isSameOrAfter("2000-01-01");
     time = subtract(time, interval)
   ) {
-    const result = await axios.get(`${URL}/klines`, {
+    const result = await axios.get(`https://api.binance.com/api/v3/klines`, {
       params: {
         symbol,
         interval,
@@ -69,7 +69,7 @@ export default async (
         startTime: subtract(time, interval).isSameOrAfter("2000-01-01")
           ? subtract(time, interval).valueOf()
           : moment()
-              .subtract(2, "year")
+              .subtract(5, "year")
               .valueOf(),
         endTime: time.valueOf()
       } as IParams
@@ -83,15 +83,17 @@ export default async (
 
   return candles.reverse().map(
     (candle: number[]): ICandle => ({
+      openTime: candle[0],
       open: candle[1],
       high: candle[2],
       low: candle[3],
       close: candle[4],
       volume: candle[5],
-      trades: candle[6],
-      quoteVolume: candle[7],
-      baseAssetVolume: candle[9],
-      quoteAssetVolume: candle[10]
+      closeTime: candle[6],
+      quoteAssetVolume: candle[7],
+      trades: candle[8],
+      takeBaseAssetVolume: candle[9],
+      takeQuoteAssetVolume: candle[10]
     })
   );
 };

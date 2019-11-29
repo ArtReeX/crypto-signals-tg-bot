@@ -4,15 +4,18 @@ A bot for Telegram based on a neural network that displays signals for the purch
 
 ## Options
 
-### tensorflow
+### tensorflow (after changing this parameter, it is necessary to retrain the network, for this you need to delete the "model" folder and run the application again)
 
-- **sequence** - interval for forecasting in the candlelight (after changing this parameter, it is necessary to retrain the network, for this you need to delete the "models" folder and run the application again)
+- **seqPast** - interval for forecasting in the candlelight
+
+- **seqFuture** - number of candles for neural network predictions
 
 - **epochs** - number of training iterations
 
 ```json
 "tensorflow": {
-    "sequence": 10,
+    "seqPast": 10,
+    "seqFuture": 1,
     "epochs": 50
 },
 ```

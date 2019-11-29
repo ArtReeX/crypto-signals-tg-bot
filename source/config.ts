@@ -23,7 +23,8 @@ export interface IDirections {
 
 interface IConfig {
   tensorflow: {
-    sequence: number;
+    seqPast: number;
+    seqFuture: number;
     epochs: number;
   };
   telegram: {

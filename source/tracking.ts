@@ -5,13 +5,7 @@ import brain from "./brain";
 import { ICandle } from "./brain/types";
 import { IDirections, Symbol } from "./config";
 
-const decisions = [
-  "уверенная продажа",
-  "неуверенная продажа",
-  "нейтрально",
-  "неуверенная покупка",
-  "уверенная покупка"
-];
+const latestPrices: { [key: string]: number } = {};
 
 export default async (
   model: tf.LayersModel,
@@ -26,23 +20,16 @@ export default async (
           interval
         );
 
-        const [
-          confirmedSale,
-          unconfirmedSale,
-          neutral,
-          unconfirmedPurshapse,
-          confirmedPurshapse
-        ] = brain
-          .predict(model, candles, sequence)
-          .map(percent => (percent * 100).toFixed(2));
+        const result = brain.predict(model, candles, sequence);
+
+        if (latestPrices[symbol + interval] !== result[0].close) {
+          latestPrices[symbol + interval] = result[0].close;
+        } else {
+          continue;
+        }
 
         bot.sendMessage(
-          `Направление ${symbol} и интервал ${interval}, возможные развития:
-          - точно вверх: \t ${confirmedPurshapse} %
-          - неточно вверх: \t ${unconfirmedPurshapse} %
-          - нейтрально: \t ${neutral} %
-          - неточно вниз: \t ${unconfirmedSale} %
-          - точно вниз: \t ${confirmedSale} %`
+          `Направление ${symbol} и интервал ${interval}, цена будет примерно ${result[0].close}.`
         );
       } catch ({ message }) {
         console.error(
