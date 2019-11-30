@@ -1,6 +1,6 @@
 {
   "tensorflow": {
-    "seqPast": 500,
+    "seqPast": 100,
     "seqFuture": 1,
     "epochs": 5
   },
@@ -10,12 +10,6 @@
   },
   "directions": {
     "BTCUSDT": {
-      "intervals": ["15m", "1h"]
-    },
-    "LTCUSDT": {
-      "intervals": ["1h"]
-    },
-    "ETHUSDT": {
       "intervals": ["1h"]
     }
   }

@@ -9,27 +9,20 @@ export default (
     layers: [
       tf.layers.lstm({
         inputShape: [seqPast, candleSize],
-        units: 256,
-        returnSequences: true
+        units: 24,
+        returnSequences: true,
+        kernelRegularizer: tf.regularizers.l2()
       }),
 
       tf.layers.lstm({
-        units: 128,
-        returnSequences: true
-      }),
-
-      tf.layers.lstm({
-        units: 64,
-        returnSequences: true
-      }),
-
-      tf.layers.lstm({
-        units: 32,
-        activation: "softmax"
+        units: 12,
+        activation: "relu",
+        kernelRegularizer: tf.regularizers.l2()
       }),
 
       tf.layers.dense({
-        units: seqFuture * candleSize
+        units: seqFuture * candleSize,
+        kernelRegularizer: tf.regularizers.l2()
       }),
 
       tf.layers.reshape({ targetShape: [seqFuture, candleSize] })
@@ -39,7 +32,7 @@ export default (
   model.summary();
 
   model.compile({
-    optimizer: tf.train.rmsprop(0.3),
+    optimizer: tf.train.rmsprop(0.01),
     loss: tf.metrics.meanAbsoluteError,
     metrics: tf.metrics.meanAbsoluteError
   });

@@ -13,7 +13,7 @@ const trainingIntervals: Interval[] = ["1h"];
 
 (async () => {
   if (!brain.images.exist()) {
-    const model = brain.create(seqPast, seqFuture, 5);
+    const model = brain.create(seqPast, seqFuture, 4);
 
     for (const i of trainingIntervals) {
       const history: ICandle[] = await binance.getHistory("BTCUSDT", i, true);
