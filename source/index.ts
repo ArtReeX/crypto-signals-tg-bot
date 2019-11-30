@@ -14,17 +14,21 @@ const trainingIntervals: Interval[] = ["1h"];
 (async () => {
   if (!brain.images.exist()) {
     const model = brain.create(seqPast, seqFuture, 4);
+    const samples: ISamples = { xs: [], ys: [] };
 
     for (const i of trainingIntervals) {
       const history: ICandle[] = await binance.getHistory("BTCUSDT", i, true);
-      const samples: ISamples = brain.samples.create(
+      const partialSamples: ISamples = brain.samples.create(
         history,
         seqPast,
         seqFuture
       );
 
-      await brain.train.run(model, samples, epochs);
+      samples.xs.push(...partialSamples.xs);
+      samples.ys.push(...partialSamples.ys);
     }
+
+    await brain.train.run(model, samples, epochs);
 
     try {
       await model.save("file://./model");
