@@ -4,7 +4,8 @@ const toArray = (candle: ICandle): number[] => [
   candle.open,
   candle.high,
   candle.low,
-  candle.close
+  candle.close,
+  candle.volume
 ];
 
 const toObject = (candle: number[]): Pick<ICandle, "close"> => ({
