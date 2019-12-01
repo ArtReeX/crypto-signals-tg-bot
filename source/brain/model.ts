@@ -9,13 +9,13 @@ export default (
     layers: [
       tf.layers.lstm({
         inputShape: [seqPast, candleSize],
-        units: 24,
+        units: 36,
         returnSequences: true,
         kernelRegularizer: tf.regularizers.l2()
       }),
 
       tf.layers.lstm({
-        units: 12,
+        units: 18,
         activation: "relu",
         kernelRegularizer: tf.regularizers.l2()
       }),
@@ -32,9 +32,9 @@ export default (
   model.summary();
 
   model.compile({
-    optimizer: tf.train.rmsprop(0.01),
-    loss: tf.metrics.meanAbsoluteError,
-    metrics: tf.metrics.meanAbsoluteError
+    optimizer: tf.train.rmsprop(0.001),
+    loss: tf.metrics.meanSquaredError,
+    metrics: tf.metrics.meanSquaredError
   });
 
   return model;
