@@ -1,6 +1,7 @@
 import { ICandle, ISamples } from "./types";
 import conv from "./converter";
 import norm from "./normalization";
+import * as tf from "@tensorflow/tfjs-node";
 
 const create = (
   candles: ICandle[],
