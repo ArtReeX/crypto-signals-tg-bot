@@ -21,7 +21,7 @@ export default (
       tf.layers.lstm({
         units: 16,
 
-        activation: "selu",
+        activation: "relu",
 
         recurrentRegularizer: tf.regularizers.l2(),
         biasRegularizer: tf.regularizers.l2(),
