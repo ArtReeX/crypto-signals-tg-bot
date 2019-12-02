@@ -28,8 +28,8 @@ export default async (
           continue;
         }
 
-        console.log(result[0].close);
-        process.exit();
+        // console.log(result[0].close);
+        // process.exit();
 
         bot.sendMessage(
           `Направление ${symbol} и интервал ${interval}, цена будет примерно ${result[0].close}.`
