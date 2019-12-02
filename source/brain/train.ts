@@ -1,5 +1,6 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ISamples } from "./types";
+import norm from "./normalization";
 
 const run = async (
   model: tf.Sequential,
@@ -7,7 +8,7 @@ const run = async (
   epochs: number
 ): Promise<tf.History> => {
   try {
-    const trainQuantity = (samples.xs.length / 100) * 80;
+    const trainQuantity = (samples.xs.length / 100) * 95;
 
     const xsTrain = tf.tensor3d(samples.xs.slice(0, trainQuantity));
     const ysTrain = tf.tensor3d(samples.ys.slice(0, trainQuantity));
@@ -19,30 +20,36 @@ const run = async (
       samples.ys.slice(trainQuantity, samples.ys.length)
     );
 
-    return model.fit(xsTrain, ysTrain, {
-      epochs,
-      shuffle: false,
-      batchSize: 128,
-      validationSplit: 0.3,
-      callbacks: {
-        onTrainBegin: () =>
-          console.info(
-            `A training based on ${samples.xs.length} templates has been launched.`
-          ),
-        onTrainEnd: () => {
-          const [evaluateLoss, evaluateAccuracy] = model.evaluate(
-            xsEvaluate,
-            ysEvaluate
-          ) as tf.Scalar[];
+    const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
 
-          console.log(
-            `Neural network training completed.
+    return model.fit(
+      norm.normalize(xsTrain, scale),
+      norm.normalize(ysTrain, scale),
+      {
+        epochs,
+        shuffle: false,
+        batchSize: 1024,
+        validationSplit: 0.2,
+        callbacks: {
+          onTrainBegin: () =>
+            console.info(
+              `A training based on ${samples.xs.length} templates has been launched.`
+            ),
+          onTrainEnd: () => {
+            const [evaluateLoss, evaluateAccuracy] = model.evaluate(
+              norm.normalize(xsEvaluate, scale),
+              norm.normalize(ysEvaluate, scale)
+            ) as tf.Scalar[];
+
+            console.log(
+              `Neural network training completed.
               - evaluate loss: ${evaluateLoss.dataSync().toString()},
               - evaluate accuracy: ${evaluateAccuracy.dataSync().toString()}`
-          );
+            );
+          }
         }
       }
-    });
+    );
   } catch ({ message }) {
     throw new Error(`Failed to train the neural network: ${message}`);
   }
