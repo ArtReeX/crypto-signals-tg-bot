@@ -9,24 +9,18 @@ export default (
     layers: [
       tf.layers.lstm({
         inputShape: [seqPast, candleSize],
-        units: 32,
-
-        returnSequences: true,
-
-        recurrentRegularizer: tf.regularizers.l2(),
-        biasRegularizer: tf.regularizers.l2(),
-        kernelRegularizer: tf.regularizers.l2()
+        units: 128,
+        returnSequences: true
       }),
+
+      tf.layers.dropout({ rate: 0.2 }),
 
       tf.layers.lstm({
-        units: 16,
-
-        activation: "relu",
-
-        recurrentRegularizer: tf.regularizers.l2(),
-        biasRegularizer: tf.regularizers.l2(),
-        kernelRegularizer: tf.regularizers.l2()
+        units: 64,
+        activation: "relu"
       }),
+
+      tf.layers.dropout({ rate: 0.2 }),
 
       tf.layers.dense({
         units: seqFuture * candleSize
@@ -39,7 +33,7 @@ export default (
   model.summary();
 
   model.compile({
-    optimizer: tf.train.rmsprop(0.001),
+    optimizer: tf.train.rmsprop(0.01),
     loss: tf.metrics.meanAbsoluteError,
     metrics: tf.metrics.meanAbsoluteError
   });

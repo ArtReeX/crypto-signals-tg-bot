@@ -8,17 +8,21 @@ export default (
   candles: ICandle[],
   seqPast: number
 ): Pick<ICandle, "close">[] => {
-  const array = candles
-    .map(candle => conv.toArray(candle))
-    .slice(candles.length - seqPast, candles.length);
+  const seq = tf.tensor([
+    candles
+      .map(candle => conv.toArray(candle))
+      .slice(candles.length - seqPast, candles.length)
+  ]);
 
-  const scale = norm.scale2d(array);
+  const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
 
-  const [result] = (model.predict(
-    tf
-      .tensor2d(norm.normalize2d(array, scale))
-      .as3D(1, array.length, array[0].length)
-  ) as tf.Tensor<tf.Rank>).arraySync() as number[][][];
+  const result = model.predict(norm.normalize(seq, scale)) as tf.Tensor<
+    tf.Rank
+  >;
 
-  return norm.denormalize2d(result, scale).map(candle => conv.toObject(candle));
+  const [denormaziled] = norm
+    .denormalize(result, scale)
+    .arraySync() as number[][][];
+
+  return denormaziled.map(candle => conv.toObject(candle));
 };
