@@ -13,14 +13,10 @@ export default (
         returnSequences: true
       }),
 
-      tf.layers.dropout({ rate: 0.2 }),
-
       tf.layers.lstm({
         units: 64,
         activation: "relu"
       }),
-
-      tf.layers.dropout({ rate: 0.2 }),
 
       tf.layers.dense({
         units: seqFuture * candleSize
@@ -33,7 +29,7 @@ export default (
   model.summary();
 
   model.compile({
-    optimizer: tf.train.rmsprop(0.01),
+    optimizer: tf.train.rmsprop(0.0005),
     loss: tf.metrics.meanAbsoluteError,
     metrics: tf.metrics.meanAbsoluteError
   });

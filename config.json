@@ -1,8 +1,8 @@
 {
   "tensorflow": {
-    "seqPast": 96,
+    "seqPast": 72,
     "seqFuture": 1,
-    "epochs": 10
+    "epochs": 100
   },
   "telegram": {
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
