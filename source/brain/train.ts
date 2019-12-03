@@ -8,6 +8,10 @@ const run = async (
   epochs: number
 ): Promise<tf.History> => {
   try {
+    console.info(
+      `A training based on ${samples.xs.length} templates has been launched.`
+    );
+
     const trainQuantity = (samples.xs.length / 100) * 95;
 
     const xsTrain = tf.tensor3d(samples.xs.slice(0, trainQuantity));
@@ -22,7 +26,7 @@ const run = async (
 
     const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
 
-    return model.fit(
+    const result = await model.fit(
       norm.normalize(xsTrain, scale),
       norm.normalize(ysTrain, scale),
       {
@@ -30,26 +34,22 @@ const run = async (
         shuffle: false,
         batchSize: 1024,
         validationSplit: 0.2,
-        callbacks: {
-          onTrainBegin: () =>
-            console.info(
-              `A training based on ${samples.xs.length} templates has been launched.`
-            ),
-          onTrainEnd: () => {
-            const [evaluateLoss, evaluateAccuracy] = model.evaluate(
-              norm.normalize(xsEvaluate, scale),
-              norm.normalize(ysEvaluate, scale)
-            ) as tf.Scalar[];
-
-            console.log(
-              `Neural network training completed.
-              - evaluate loss: ${evaluateLoss.dataSync().toString()},
-              - evaluate accuracy: ${evaluateAccuracy.dataSync().toString()}`
-            );
-          }
-        }
+        callbacks: tf.callbacks.earlyStopping({ patience: 2 })
       }
     );
+
+    const [evaluateLoss, evaluateAccuracy] = model.evaluate(
+      norm.normalize(xsEvaluate, scale),
+      norm.normalize(ysEvaluate, scale)
+    ) as tf.Scalar[];
+
+    console.log(
+      `Neural network training completed.
+      - evaluate loss: ${evaluateLoss.dataSync().toString()},
+      - evaluate accuracy: ${evaluateAccuracy.dataSync().toString()}`
+    );
+
+    return result;
   } catch ({ message }) {
     throw new Error(`Failed to train the neural network: ${message}`);
   }
