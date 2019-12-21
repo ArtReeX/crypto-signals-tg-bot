@@ -1,6 +1,6 @@
 {
   "tensorflow": {
-    "seqPast": 10,
+    "seqPast": 5,
     "seqFuture": 1,
     "epochs": 200
   },
