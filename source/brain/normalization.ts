@@ -8,11 +8,21 @@ const scale = (tensor: tf.Tensor): [tf.Tensor, tf.Tensor] => [
 const normalize = (
   tensor: tf.Tensor,
   scale: [tf.Tensor, tf.Tensor]
-): tf.Tensor => tensor.sub(scale[0]).div(scale[1].sub(scale[0]));
+): tf.Tensor => {
+  const [min, max] = scale;
+  return tensor.sub(min).div(max.sub(min));
+};
 
 const denormalize = (
   tensor: tf.Tensor,
   scale: [tf.Tensor, tf.Tensor]
-): tf.Tensor => tensor.mul(scale[1].sub(scale[0])).add(scale[0]);
+): tf.Tensor => {
+  const [min, max] = scale;
+  return tensor.mul(max.sub(min)).add(min);
+};
 
-export default { scale, normalize, denormalize };
+export default {
+  scale,
+  normalize,
+  denormalize
+};

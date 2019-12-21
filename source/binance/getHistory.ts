@@ -24,26 +24,51 @@ interface IParams {
   limit?: number;
 }
 
-const subtract = (time: moment.Moment, interval: Interval): moment.Moment => {
-  const unit: number = Number(interval.replace(/\D/, "")) * 1000;
-
-  if (interval.includes("m")) {
-    return moment(time).subtract(unit, "minute");
+const intervalInMinutes = (interval: Interval): number => {
+  switch (interval) {
+    case "1m": {
+      return 1;
+    }
+    case "3m": {
+      return 3;
+    }
+    case "5m": {
+      return 5;
+    }
+    case "15m": {
+      return 15;
+    }
+    case "30m": {
+      return 30;
+    }
+    case "1h": {
+      return 60;
+    }
+    case "2h": {
+      return 60 * 2;
+    }
+    case "4h": {
+      return 60 * 4;
+    }
+    case "6h": {
+      return 60 * 6;
+    }
+    case "12h": {
+      return 60 * 12;
+    }
+    case "1d": {
+      return 60 * 24;
+    }
+    case "3d": {
+      return 60 * 24 * 3;
+    }
+    case "1w": {
+      return 60 * 24 * 7;
+    }
+    case "1M": {
+      return 60 * 24 * 7 * 30;
+    }
   }
-  if (interval.includes("h")) {
-    return moment(time).subtract(unit, "hour");
-  }
-  if (interval.includes("d")) {
-    return moment(time).subtract(unit, "day");
-  }
-  if (interval.includes("w")) {
-    return moment(time).subtract(unit, "week");
-  }
-  if (interval.includes("M")) {
-    return moment(time).subtract(unit, "month");
-  }
-
-  return moment(time);
 };
 
 export default async (
@@ -54,24 +79,22 @@ export default async (
   let candles: number[][] = [];
 
   for (
-    let time = moment(),
-      lowerBound = full
-        ? moment().subtract(5, "year")
-        : subtract(time, interval);
-    time.isSameOrAfter(lowerBound) && time.isSameOrAfter("2000-01-01");
-    time = subtract(time, interval)
+    let time = full
+      ? moment().subtract(5, "years")
+      : moment().subtract(intervalInMinutes(interval) * 1000, "minutes");
+    time.isSameOrBefore(moment()) && time.isValid();
+    time.add(intervalInMinutes(interval) * 1000, "minutes")
   ) {
     const result = await axios.get(`https://api.binance.com/api/v3/klines`, {
       params: {
         symbol,
         interval,
         limit: 1000,
-        startTime: subtract(time, interval).isSameOrAfter("2000-01-01")
-          ? subtract(time, interval).valueOf()
-          : moment()
-              .subtract(5, "year")
-              .valueOf(),
-        endTime: time.valueOf()
+        startTime: time.valueOf(),
+        endTime: time
+          .clone()
+          .add(intervalInMinutes(interval) * 1000, "minutes")
+          .valueOf()
       } as IParams
     });
 
@@ -81,7 +104,7 @@ export default async (
   // delete current candle
   candles.pop();
 
-  return candles.reverse().map(
+  return candles.map(
     (candle: number[]): ICandle => ({
       openTime: Number(candle[0]),
       open: Number(candle[1]),

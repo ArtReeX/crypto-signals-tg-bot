@@ -9,17 +9,19 @@ export default (
     layers: [
       tf.layers.lstm({
         inputShape: [seqPast, candleSize],
-        units: 128,
-        returnSequences: true
+        units: 12,
+        returnSequences: true,
+        activation: "relu"
       }),
 
       tf.layers.lstm({
-        units: 64,
+        units: 12,
         activation: "relu"
       }),
 
       tf.layers.dense({
-        units: seqFuture * candleSize
+        units: seqFuture * candleSize,
+        activation: "linear"
       }),
 
       tf.layers.reshape({ targetShape: [seqFuture, candleSize] })
@@ -29,7 +31,7 @@ export default (
   model.summary();
 
   model.compile({
-    optimizer: tf.train.rmsprop(0.0005),
+    optimizer: tf.train.adam(0.001),
     loss: tf.metrics.meanAbsoluteError,
     metrics: tf.metrics.meanAbsoluteError
   });

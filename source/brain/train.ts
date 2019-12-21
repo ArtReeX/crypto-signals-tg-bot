@@ -34,7 +34,10 @@ const run = async (
         shuffle: false,
         batchSize: 1024,
         validationSplit: 0.2,
-        callbacks: tf.callbacks.earlyStopping({ patience: 2 })
+        callbacks: tf.callbacks.earlyStopping({
+          patience: 2,
+          verbose: 1
+        })
       }
     );
 
