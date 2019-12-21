@@ -8,7 +8,7 @@ export default (
   candles: ICandle[],
   seqPast: number
 ): Pick<ICandle, "close">[] => {
-  const seq = tf.tensor([
+  const seq = tf.tensor3d([
     candles
       .map(candle => conv.toArray(candle))
       .slice(candles.length - seqPast, candles.length)
