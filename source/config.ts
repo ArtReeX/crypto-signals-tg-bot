@@ -1,6 +1,5 @@
 const config: IConfig = require(process.env.CONFIG_PATH || "../config.json");
 
-export type Symbol = "BTCUSDT" | "ETHUSDT";
 export type Interval =
   | "1m"
   | "3m"
@@ -22,11 +21,6 @@ export interface IDirections {
 }
 
 interface IConfig {
-  tensorflow: {
-    seqPast: number;
-    seqFuture: number;
-    epochs: number;
-  };
   telegram: {
     token: string;
     chat: number;

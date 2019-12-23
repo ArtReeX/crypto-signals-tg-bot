@@ -1,36 +1,29 @@
 import * as tf from "@tensorflow/tfjs-node";
-import { ISamples } from "./types";
+import { ISamples } from "./samples";
 import norm from "./normalization";
 
 const run = async (
   model: tf.Sequential,
-  samples: ISamples,
-  epochs: number
+  samples: ISamples
 ): Promise<tf.History> => {
   try {
     console.info(
       `A training based on ${samples.xs.length} templates has been launched.`
     );
 
-    const trainQuantity = (samples.xs.length / 100) * 95;
+    const trainQuantity = (samples.xs.length / 100) * 90;
 
     const xsTrain = tf.tensor3d(samples.xs.slice(0, trainQuantity));
-    const ysTrain = tf.tensor3d(samples.ys.slice(0, trainQuantity));
+    const ysTrain = tf.tensor2d(samples.ys.slice(0, trainQuantity));
 
-    const xsEvaluate = tf.tensor3d(
-      samples.xs.slice(trainQuantity, samples.xs.length)
-    );
-    const ysEvaluate = tf.tensor3d(
-      samples.ys.slice(trainQuantity, samples.ys.length)
-    );
-
-    const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
+    const xsEvaluate = tf.tensor3d(samples.xs.slice(trainQuantity));
+    const ysEvaluate = tf.tensor2d(samples.ys.slice(trainQuantity));
 
     const result = await model.fit(
-      norm.normalize(xsTrain, scale),
-      norm.normalize(ysTrain, scale),
+      norm.normalize(xsTrain),
+      norm.normalize(ysTrain),
       {
-        epochs,
+        epochs: 500,
         shuffle: false,
         batchSize: 1024,
         validationSplit: 0.2,
@@ -42,8 +35,8 @@ const run = async (
     );
 
     const [evaluateLoss, evaluateAccuracy] = model.evaluate(
-      norm.normalize(xsEvaluate, scale),
-      norm.normalize(ysEvaluate, scale)
+      norm.normalize(xsEvaluate),
+      norm.normalize(ysEvaluate)
     ) as tf.Scalar[];
 
     console.log(

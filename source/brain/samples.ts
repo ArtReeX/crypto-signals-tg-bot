@@ -1,19 +1,20 @@
-import { ICandle, ISamples } from "./types";
-import conv from "./converter";
+import { ICandle } from "../binance/getHistory";
+import { toArray } from "./utilities";
 
-const create = (
-  candles: ICandle[],
-  seqPast: number,
-  seqFuture: number
-): ISamples => {
+export interface ISamples {
+  xs: number[][][];
+  ys: number[][];
+}
+
+const create = (candles: ICandle[], sequence: number): ISamples => {
   const samples: ISamples = { xs: [], ys: [] };
-  const simplified = candles.map((candle: ICandle) => conv.toArray(candle));
 
-  for (let count = 0; count + seqPast + seqFuture < candles.length; count++) {
-    samples.xs.push(simplified.slice(count, count + seqPast));
-    samples.ys.push(
-      simplified.slice(count + seqPast, count + seqPast + seqFuture)
-    );
+  for (let count = 0; count + sequence + 1 < candles.length; count++) {
+    const seq = candles.slice(count, count + sequence).map(c => toArray(c));
+    const target = toArray(candles[count + sequence + 1]);
+
+    samples.xs.push(seq);
+    samples.ys.push(target);
   }
 
   return samples;

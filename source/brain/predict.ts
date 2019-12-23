@@ -1,28 +1,18 @@
 import * as tf from "@tensorflow/tfjs-node";
-import { ICandle } from "./types";
-import conv from "./converter";
+import { ICandle } from "../binance/getHistory";
 import norm from "./normalization";
+import { toArray } from "./utilities";
 
 export default (
   model: tf.LayersModel,
   candles: ICandle[],
-  seqPast: number
-): Pick<ICandle, "close">[] => {
-  const seq = tf.tensor3d([
-    candles
-      .map(candle => conv.toArray(candle))
-      .slice(candles.length - seqPast, candles.length)
-  ]);
+  sequence: number
+): number[] => {
+  const seq = candles.slice(candles.length - sequence, candles.length);
+  const normalized = norm.normalize(tf.tensor3d([seq.map(c => toArray(c))]));
 
-  const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
+  const result = model.predict(normalized) as tf.Tensor2D;
+  const [pick] = norm.denormalize(result).arraySync() as number[][];
 
-  const result = model.predict(norm.normalize(seq, scale)) as tf.Tensor<
-    tf.Rank
-  >;
-
-  const [denormaziled] = norm
-    .denormalize(result, scale)
-    .arraySync() as number[][][];
-
-  return denormaziled.map(candle => conv.toObject(candle));
+  return pick;
 };
