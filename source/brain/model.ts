@@ -5,7 +5,13 @@ export default (sequence: number, params: number): tf.Sequential => {
     layers: [
       tf.layers.lstm({
         inputShape: [sequence, params],
-        units: 32,
+        units: 128,
+        activation: "relu",
+        returnSequences: true
+      }),
+
+      tf.layers.lstm({
+        units: 64,
         activation: "relu",
         returnSequences: true
       }),

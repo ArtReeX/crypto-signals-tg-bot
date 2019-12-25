@@ -1,18 +1,19 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ICandle } from "../binance/getHistory";
-import norm from "./normalization";
 import { toArray } from "./utilities";
+import { denormalize, normalize, smooth } from "./normalization";
 
 export default (
   model: tf.LayersModel,
   candles: ICandle[],
   sequence: number
 ): number[] => {
-  const seq = candles.slice(candles.length - sequence, candles.length);
-  const normalized = norm.normalize(tf.tensor3d([seq.map(c => toArray(c))]));
+  const array = candles.map(c => toArray(c));
+  const seq = array.slice(candles.length - sequence, candles.length);
+  const tensor = tf.tensor3d([seq]);
 
-  const result = model.predict(normalized) as tf.Tensor2D;
-  const [pick] = norm.denormalize(result).arraySync() as number[][];
+  const result = model.predict(tensor) as tf.Tensor2D;
+  const [pick] = result.arraySync() as number[][];
 
   return pick;
 };

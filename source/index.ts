@@ -5,12 +5,12 @@ import { ICandle } from "./binance/getHistory";
 import getConfig, { Interval } from "./config";
 import tracking from "./tracking";
 
-const SEQUENCE = 5;
+const SEQUENCE = 10;
 
 const { directions } = getConfig();
 
 const params: { [key: string]: Interval[] } = {
-  BTCUSDT: ["1h", "2h", "4h", "6h"]
+  BTCUSDT: ["1h", "2h"]
 };
 
 (async () => {

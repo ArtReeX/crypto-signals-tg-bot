@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs-node";
 import { ISamples } from "./samples";
-import norm from "./normalization";
+import { normalize } from "./normalization";
 
 const run = async (
   model: tf.Sequential,
@@ -19,24 +19,20 @@ const run = async (
     const xsEvaluate = tf.tensor3d(samples.xs.slice(trainQuantity));
     const ysEvaluate = tf.tensor2d(samples.ys.slice(trainQuantity));
 
-    const result = await model.fit(
-      norm.normalize(xsTrain),
-      norm.normalize(ysTrain),
-      {
-        epochs: 500,
-        shuffle: false,
-        batchSize: 1024,
-        validationSplit: 0.2,
-        callbacks: tf.callbacks.earlyStopping({
-          patience: 2,
-          verbose: 1
-        })
-      }
-    );
+    const result = await model.fit(xsTrain, ysTrain, {
+      epochs: 500,
+      shuffle: false,
+      batchSize: 1024,
+      validationSplit: 0.2,
+      callbacks: tf.callbacks.earlyStopping({
+        patience: 2,
+        verbose: 1
+      })
+    });
 
     const [evaluateLoss, evaluateAccuracy] = model.evaluate(
-      norm.normalize(xsEvaluate),
-      norm.normalize(ysEvaluate)
+      xsEvaluate,
+      ysEvaluate
     ) as tf.Scalar[];
 
     console.log(

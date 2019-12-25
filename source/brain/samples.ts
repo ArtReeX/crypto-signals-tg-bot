@@ -1,5 +1,6 @@
 import { ICandle } from "../binance/getHistory";
-import { toArray } from "./utilities";
+import { toArray, transpose } from "./utilities";
+import { smooth } from "./normalization";
 
 export interface ISamples {
   xs: number[][][];
@@ -8,10 +9,11 @@ export interface ISamples {
 
 const create = (candles: ICandle[], sequence: number): ISamples => {
   const samples: ISamples = { xs: [], ys: [] };
+  const array = candles.map(c => toArray(c));
 
   for (let count = 0; count + sequence + 1 < candles.length; count++) {
-    const seq = candles.slice(count, count + sequence).map(c => toArray(c));
-    const target = toArray(candles[count + sequence + 1]);
+    const seq = array.slice(count, count + sequence);
+    const target = array[count + sequence + 1];
 
     samples.xs.push(seq);
     samples.ys.push(target);
