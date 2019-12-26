@@ -10,7 +10,7 @@ const SEQUENCE = 10;
 const { directions } = getConfig();
 
 const params: { [key: string]: Interval[] } = {
-  BTCUSDT: ["1h", "2h"]
+  BTCUSDT: ["2h", "4h", "6h", "12h"]
 };
 
 (async () => {

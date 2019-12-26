@@ -5,7 +5,7 @@
   },
   "directions": {
     "BTCUSDT": {
-      "intervals": ["1h"]
+      "intervals": ["6h"]
     }
   }
 }
