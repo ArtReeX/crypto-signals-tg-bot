@@ -38,12 +38,8 @@ A bot for Telegram based on a neural network that displays signals for the purch
 
 ```json
 "directions": {
-    "BTCUSDT": {
-      "intervals": ["1m", "5m"]
-    },
-    "ETHUSD": {
-      "intervals": ["1d", "1w"]
-    },
+    "BTCUSDT": ["1m", "5m"],
+    "ETHUSD": ["1d", "1w"]
     ...
   }
 },
