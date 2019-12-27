@@ -17,7 +17,7 @@ export type Interval =
   | "1M";
 
 export interface IDirections {
-  [key: string]: Interval[];
+  [key: string]: [Interval];
 }
 
 interface IConfig {
