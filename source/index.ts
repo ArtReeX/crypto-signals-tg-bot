@@ -1,34 +1,40 @@
 import binance from "./binance";
 import brain from "./brain";
-import { ICandle, ISamples } from "./brain/types";
+import { ISamples } from "./brain/samples";
+import { ICandle } from "./binance/getHistory";
 import getConfig, { Interval } from "./config";
 import tracking from "./tracking";
 
-const {
-  tensorflow: { seqPast, seqFuture, epochs },
-  directions
-} = getConfig();
+const SEQUENCE = 10;
 
-const trainingIntervals: Interval[] = ["1h"];
+const { directions } = getConfig();
+
+const params: { [key: string]: Interval[] } = {
+  BTCUSDT: ["2h", "4h", "6h", "12h"]
+};
 
 (async () => {
   if (!brain.images.exist()) {
-    const model = brain.create(seqPast, seqFuture, 5);
     const samples: ISamples = { xs: [], ys: [] };
+    for (const direction in params) {
+      for (const interval of params[direction]) {
+        const history: ICandle[] = await binance.getHistory(
+          direction,
+          interval,
+          true
+        );
+        const partialSamples: ISamples = brain.samples.create(
+          history,
+          SEQUENCE
+        );
 
-    for (const i of trainingIntervals) {
-      const history: ICandle[] = await binance.getHistory("BTCUSDT", i, true);
-      const partialSamples: ISamples = brain.samples.create(
-        history,
-        seqPast,
-        seqFuture
-      );
-
-      samples.xs.push(...partialSamples.xs);
-      samples.ys.push(...partialSamples.ys);
+        samples.xs.push(...partialSamples.xs);
+        samples.ys.push(...partialSamples.ys);
+      }
     }
 
-    await brain.train.run(model, samples, epochs);
+    const model = brain.create(SEQUENCE, samples.xs[0][0].length);
+    await brain.train.run(model, samples);
 
     try {
       await model.save("file://./model");
@@ -42,9 +48,9 @@ const trainingIntervals: Interval[] = ["1h"];
     const model = await brain.images.load();
     console.info("Neural network snapshot loaded successfully.");
 
-    tracking(model, directions, seqPast);
+    tracking(model, directions, SEQUENCE);
     setInterval(async () => {
-      tracking(model, directions, seqPast);
+      tracking(model, directions, SEQUENCE);
     }, 60 * 1000);
 
     console.info("Neural bot launched successfully.");

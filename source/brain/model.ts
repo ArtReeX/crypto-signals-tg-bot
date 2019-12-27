@@ -1,39 +1,39 @@
 import * as tf from "@tensorflow/tfjs-node";
 
-export default (
-  seqPast: number,
-  seqFuture: number,
-  candleSize: number
-): tf.Sequential => {
+export default (sequence: number, params: number): tf.Sequential => {
   const model = tf.sequential({
     layers: [
       tf.layers.lstm({
-        inputShape: [seqPast, candleSize],
-        units: 12,
-        returnSequences: true,
-        activation: "relu"
+        inputShape: [sequence, params],
+        units: 32,
+        activation: "relu",
+        returnSequences: true
       }),
 
       tf.layers.lstm({
-        units: 12,
+        units: 32,
+        activation: "relu",
+        returnSequences: true
+      }),
+
+      tf.layers.lstm({
+        units: 32,
         activation: "relu"
       }),
 
       tf.layers.dense({
-        units: seqFuture * candleSize,
+        units: params,
         activation: "linear"
-      }),
-
-      tf.layers.reshape({ targetShape: [seqFuture, candleSize] })
+      })
     ]
   });
 
   model.summary();
 
   model.compile({
-    optimizer: tf.train.adam(0.001),
-    loss: tf.metrics.meanAbsoluteError,
-    metrics: tf.metrics.meanAbsoluteError
+    optimizer: tf.train.adam(),
+    loss: tf.metrics.meanAbsolutePercentageError,
+    metrics: tf.metrics.meanAbsolutePercentageError
   });
 
   return model;

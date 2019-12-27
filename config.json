@@ -1,16 +1,10 @@
 {
-  "tensorflow": {
-    "seqPast": 5,
-    "seqFuture": 1,
-    "epochs": 200
-  },
   "telegram": {
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
     "chat": -1001158670090
   },
   "directions": {
-    "BTCUSDT": {
-      "intervals": ["1h"]
-    }
+    "BTCUSDT": ["6h"],
+    "ETHUSDT": ["6h"]
   }
 }

@@ -1,8 +1,8 @@
-import { Symbol, Interval } from "../config";
+import { Interval } from "../config";
 import axios from "axios";
 import moment from "moment";
 
-interface ICandle {
+export interface ICandle {
   openTime: number;
   open: number;
   high: number;
@@ -17,7 +17,7 @@ interface ICandle {
 }
 
 interface IParams {
-  symbol: Symbol;
+  symbol: string;
   interval: Interval;
   startTime?: number;
   endTime?: number;
@@ -72,7 +72,7 @@ const intervalInMinutes = (interval: Interval): number => {
 };
 
 export default async (
-  symbol: Symbol,
+  symbol: string,
   interval: Interval,
   full: boolean = false
 ): Promise<ICandle[]> => {

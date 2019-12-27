@@ -1,49 +1,38 @@
 import * as tf from "@tensorflow/tfjs-node";
-import { ISamples } from "./types";
-import norm from "./normalization";
+import { ISamples } from "./samples";
+import { normalize } from "./normalization";
 
 const run = async (
   model: tf.Sequential,
-  samples: ISamples,
-  epochs: number
+  samples: ISamples
 ): Promise<tf.History> => {
   try {
     console.info(
       `A training based on ${samples.xs.length} templates has been launched.`
     );
 
-    const trainQuantity = (samples.xs.length / 100) * 95;
+    const trainQuantity = (samples.xs.length / 100) * 90;
 
     const xsTrain = tf.tensor3d(samples.xs.slice(0, trainQuantity));
-    const ysTrain = tf.tensor3d(samples.ys.slice(0, trainQuantity));
+    const ysTrain = tf.tensor2d(samples.ys.slice(0, trainQuantity));
 
-    const xsEvaluate = tf.tensor3d(
-      samples.xs.slice(trainQuantity, samples.xs.length)
-    );
-    const ysEvaluate = tf.tensor3d(
-      samples.ys.slice(trainQuantity, samples.ys.length)
-    );
+    const xsEvaluate = tf.tensor3d(samples.xs.slice(trainQuantity));
+    const ysEvaluate = tf.tensor2d(samples.ys.slice(trainQuantity));
 
-    const scale = [tf.tensor(0), tf.tensor(50000)] as [tf.Tensor, tf.Tensor];
-
-    const result = await model.fit(
-      norm.normalize(xsTrain, scale),
-      norm.normalize(ysTrain, scale),
-      {
-        epochs,
-        shuffle: false,
-        batchSize: 1024,
-        validationSplit: 0.2,
-        callbacks: tf.callbacks.earlyStopping({
-          patience: 2,
-          verbose: 1
-        })
-      }
-    );
+    const result = await model.fit(xsTrain, ysTrain, {
+      epochs: 500,
+      shuffle: false,
+      batchSize: 1024,
+      validationSplit: 0.2,
+      callbacks: tf.callbacks.earlyStopping({
+        patience: 2,
+        verbose: 1
+      })
+    });
 
     const [evaluateLoss, evaluateAccuracy] = model.evaluate(
-      norm.normalize(xsEvaluate, scale),
-      norm.normalize(ysEvaluate, scale)
+      xsEvaluate,
+      ysEvaluate
     ) as tf.Scalar[];
 
     console.log(
