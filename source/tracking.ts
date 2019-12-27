@@ -20,11 +20,7 @@ export default async (
         const result = brain.predict(model, seq);
 
         if (lastPrices[symbol + interval] !== result[1]) {
-          bot.sendMessage(
-            `[${symbol}/${interval}] - ${result[1]}, last -> ${
-              result[1] > lastPrices[symbol + interval] ? "+" : "-"
-            }`
-          );
+          bot.sendMessage(`[${symbol}/${interval}] - ${result[0]}.`);
 
           lastPrices[symbol + interval] = result[1];
         }
