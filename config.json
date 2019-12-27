@@ -4,8 +4,7 @@
     "chat": -1001158670090
   },
   "directions": {
-    "BTCUSDT": {
-      "intervals": ["6h"]
-    }
+    "BTCUSDT": ["6h"],
+    "ETHUSDT": ["6h"]
   }
 }
