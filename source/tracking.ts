@@ -1,28 +1,38 @@
-import * as tf from "@tensorflow/tfjs-node";
 import binance from "./binance";
 import bot from "./bot";
-import brain from "./brain";
 import { IDirections } from "./config";
+import * as ti from "technicalindicators";
 
-const lastPrices: { [key: string]: number } = {};
+const last: { [key: string]: { bullish: boolean; bearish: boolean } } = {};
 
-export default async (
-  model: tf.LayersModel,
-  directions: IDirections,
-  sequence: number
-) => {
+export default async (directions: IDirections) => {
   for (let symbol in directions) {
     for (let interval of directions[symbol]) {
       try {
         const candles = await binance.getHistory(symbol, interval);
-        const seq = candles.slice(candles.length - sequence, candles.length);
+        const seq = candles.slice(candles.length - 10, candles.length);
 
-        const result = brain.predict(model, seq);
+        const open = seq.map(c => c.open);
+        const close = seq.map(c => c.close);
+        const high = seq.map(c => c.high);
+        const low = seq.map(c => c.low);
 
-        if (lastPrices[symbol + interval] !== result[1]) {
-          bot.sendMessage(`[${symbol}/${interval}] - ${result[0]}.`);
+        const bullish = ti.bullish({ open, close, high, low });
+        const bearish = ti.bearish({ open, close, high, low });
 
-          lastPrices[symbol + interval] = result[1];
+        if (last[symbol + interval] === undefined) {
+          last[symbol + interval] = { bullish, bearish };
+        } else if (
+          last[symbol + interval].bullish !== bullish ||
+          last[symbol + interval].bearish !== bearish
+        ) {
+          last[symbol + interval] = { bullish, bearish };
+
+          bot.sendMessage(
+            `[${symbol}/${interval}] - ${
+              bullish ? "бычий" : bearish ? "медвежий" : "нейтральный"
+            } тренд.`
+          );
         }
       } catch ({ message }) {
         console.error(

@@ -4,7 +4,9 @@
     "chat": -1001158670090
   },
   "directions": {
-    "BTCUSDT": ["6h"],
-    "ETHUSDT": ["6h"]
+    "BTCUSDT": ["4h"],
+    "ETHUSDT": ["4h"],
+    "BCHUSDT": ["4h"],
+    "BNBUSDT": ["4h"]
   }
 }
