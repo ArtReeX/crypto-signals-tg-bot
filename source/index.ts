@@ -47,8 +47,6 @@ const last: { [key: string]: { bullish: boolean; bearish: boolean } } = {};
         }
       }
     }
-
-    console.info("Neural bot launched successfully.");
   } catch ({ message }) {
     throw new Error(`Failed to load neural network image: ${message}`);
   }
