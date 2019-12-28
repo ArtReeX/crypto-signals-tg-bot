@@ -25,7 +25,8 @@ interface IConfig {
     token: string;
     chat: number;
   };
-  directions: IDirections;
+  symbols: string[];
+  intervals: Interval[];
 }
 
 export default (): IConfig => config;

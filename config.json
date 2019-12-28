@@ -3,10 +3,6 @@
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
     "chat": -1001158670090
   },
-  "directions": {
-    "BTCUSDT": ["4h"],
-    "ETHUSDT": ["4h"],
-    "BCHUSDT": ["4h"],
-    "BNBUSDT": ["4h"]
-  }
+  "symbols": ["BTCUSDT", "ETHUSDT", "BCHUSDT", "BNBUSDT", "TRXUSDT", "LTCUSDT"],
+  "intervals": ["2h", "4h"]
 }
