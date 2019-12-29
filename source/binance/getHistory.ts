@@ -1,28 +1,10 @@
 import { Interval } from "../config";
-import axios from "axios";
 import moment from "moment";
-
-export interface ICandle {
-  openTime: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  closeTime: number;
-  quoteAssetVolume: number;
-  trades: number;
-  takeBaseAssetVolume: number;
-  takeQuoteAssetVolume: number;
-}
-
-interface IParams {
-  symbol: string;
-  interval: Interval;
-  startTime?: number;
-  endTime?: number;
-  limit?: number;
-}
+import Binance, {
+  CandleChartInterval,
+  CandleChartResult
+} from "binance-api-node";
+import { ICandle } from "../types";
 
 const intervalInMinutes = (interval: Interval): number => {
   switch (interval) {
@@ -76,47 +58,39 @@ export default async (
   interval: Interval,
   full: boolean = false
 ): Promise<ICandle[]> => {
-  let candles: number[][] = [];
+  const client = Binance();
+  let candles: CandleChartResult[] = [];
 
   for (
-    let time = full
-      ? moment().subtract(5, "years")
-      : moment().subtract(intervalInMinutes(interval) * 1000, "minutes");
-    time.isSameOrBefore(moment()) && time.isValid();
+    let max = moment(),
+      time = full
+        ? max.clone().subtract(5, "years")
+        : max.clone().subtract(intervalInMinutes(interval) * 1000, "minutes");
+    time.isBefore(max) && time.isValid();
     time.add(intervalInMinutes(interval) * 1000, "minutes")
   ) {
-    const result = await axios.get(`https://api.binance.com/api/v3/klines`, {
-      params: {
-        symbol,
-        interval,
-        limit: 1000,
-        startTime: time.valueOf(),
-        endTime: time
-          .clone()
-          .add(intervalInMinutes(interval) * 1000, "minutes")
-          .valueOf()
-      } as IParams
+    const result = await client.candles({
+      symbol,
+      interval: interval as CandleChartInterval,
+      limit: 1000,
+      startTime: time.valueOf(),
+      endTime: time
+        .clone()
+        .add(intervalInMinutes(interval) * 1000, "minutes")
+        .valueOf()
     });
 
-    candles.push(...(result.data as number[][]));
+    candles.push(...result);
   }
 
   // delete current candle
   candles.pop();
 
-  return candles.map(
-    (candle: number[]): ICandle => ({
-      openTime: Number(candle[0]),
-      open: Number(candle[1]),
-      high: Number(candle[2]),
-      low: Number(candle[3]),
-      close: Number(candle[4]),
-      volume: Number(candle[5]),
-      closeTime: Number(candle[6]),
-      quoteAssetVolume: Number(candle[7]),
-      trades: Number(candle[8]),
-      takeBaseAssetVolume: Number(candle[9]),
-      takeQuoteAssetVolume: Number(candle[10])
-    })
-  );
+  return candles.map(c => ({
+    open: Number(c.open),
+    close: Number(c.close),
+    high: Number(c.high),
+    low: Number(c.low),
+    volume: Number(c.volume)
+  }));
 };
