@@ -28,12 +28,14 @@
   },
   "homepage": "https://github.com/ArtReeX/crypto-signals-tg-bot#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.149",
     "@types/node-telegram-bot-api": "^0.40.1",
     "nodemon": "^2.0.2",
     "typescript": "^3.7.4"
   },
   "dependencies": {
     "binance-api-node": "^0.9.12",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-telegram-bot-api": "^0.40.0",
     "technicalindicators": "^3.0.0"

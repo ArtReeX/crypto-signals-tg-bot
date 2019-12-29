@@ -1,10 +1,9 @@
-import * as ti from "technicalindicators";
+import binance from "./binance";
 import bot from "./bot";
 import getConfig from "./config";
-import binance from "./binance";
 import getTrend, { Trend } from "./getTrend";
-import { ICandle } from "./types";
 import limiter from "./limiter";
+import { ICandle } from "./types";
 
 const { symbols, intervals } = getConfig();
 
@@ -31,11 +30,11 @@ const trendToWord = (trend: Trend): string => {
         }
       }
 
-      const executed: ICandle[][] = await limiter(Object.values(requests));
+      const executed = await limiter(requests);
       const trends: { [key: string]: Trend } = {};
 
-      for (let count = 0; count < Object.keys(requests).length; count++) {
-        trends[Object.keys(requests)[count]] = getTrend(executed[count]);
+      for (const direction in executed) {
+        trends[direction] = getTrend(executed[direction]);
       }
 
       const listOfTrends = Object.keys(trends)
@@ -56,7 +55,7 @@ const trendToWord = (trend: Trend): string => {
         );
 
       if (listOfTrends.length) {
-        bot.sendMessage(listOfTrends.join("\n"));
+        // bot.sendMessage(listOfTrends.join("\n"));
       }
     } catch ({ message }) {
       console.error(message);
