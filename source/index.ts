@@ -55,7 +55,7 @@ const trendToWord = (trend: Trend): string => {
         );
 
       if (listOfTrends.length) {
-        // bot.sendMessage(listOfTrends.join("\n"));
+        bot.sendMessage(listOfTrends.join("\n"));
       }
     } catch ({ message }) {
       console.error(message);
