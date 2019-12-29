@@ -3,6 +3,14 @@
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
     "chat": -1001158670090
   },
-  "symbols": ["BTCUSDT", "ETHUSDT", "BCHUSDT", "BNBUSDT", "TRXUSDT", "LTCUSDT"],
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "BCHUSDT",
+    "BNBUSDT",
+    "TRXUSDT",
+    "LTCUSDT",
+    "XRPUSDT"
+  ],
   "intervals": ["2h", "4h"]
 }

@@ -1,53 +1,65 @@
-import binance from "./binance";
-import { ICandle } from "./binance/getHistory";
-import getConfig, { Interval } from "./config";
 import * as ti from "technicalindicators";
 import bot from "./bot";
-import getHistory from "./getHistory";
+import getConfig from "./config";
+import binance from "./binance";
+import getTrend, { Trend } from "./getTrend";
+import { ICandle } from "./types";
+import limiter from "./limiter";
 
 const { symbols, intervals } = getConfig();
-const last: { [key: string]: { bullish: boolean; bearish: boolean } } = {};
+
+const trendToWord = (trend: Trend): string => {
+  switch (trend) {
+    case "BULLISH":
+      return "бычий";
+    case "BEARISH":
+      return "медвежий";
+    default:
+      return "нейтральный";
+  }
+};
 
 (async () => {
-  try {
-    for (; true; ) {
+  const lastTrends: { [key: string]: Trend } = {};
+
+  for (; true; ) {
+    try {
+      const requests: { [key: string]: Promise<ICandle[]> } = {};
       for (let symbol of symbols) {
         for (let interval of intervals) {
-          try {
-            const candles = await getHistory(symbol, interval, 5);
-            const seq = candles.slice(candles.length - 10, candles.length);
-
-            const open = seq.map(c => c.open);
-            const close = seq.map(c => c.close);
-            const high = seq.map(c => c.high);
-            const low = seq.map(c => c.low);
-
-            const bullish = ti.bullish({ open, close, high, low });
-            const bearish = ti.bearish({ open, close, high, low });
-
-            if (last[symbol + interval] === undefined) {
-              last[symbol + interval] = { bullish, bearish };
-            } else if (
-              last[symbol + interval].bullish !== bullish ||
-              last[symbol + interval].bearish !== bearish
-            ) {
-              last[symbol + interval] = { bullish, bearish };
-
-              bot.sendMessage(
-                `[${symbol}/${interval}] - ${
-                  bullish ? "бычий" : bearish ? "медвежий" : "нейтральный"
-                } тренд.`
-              );
-            }
-          } catch ({ message }) {
-            console.error(
-              `Failed to get direction information ${symbol} with interval ${interval}: ${message}.`
-            );
-          }
+          requests[symbol + interval] = binance.getHistory(symbol, interval);
         }
       }
+
+      const executed: ICandle[][] = await limiter(Object.values(requests));
+      const trends: { [key: string]: Trend } = {};
+
+      for (let count = 0; count < Object.keys(requests).length; count++) {
+        trends[Object.keys(requests)[count]] = getTrend(executed[count]);
+      }
+
+      const listOfTrends = Object.keys(trends)
+        .sort()
+        .filter(direction => {
+          if (
+            lastTrends[direction] === undefined ||
+            lastTrends[direction] !== trends[direction]
+          ) {
+            lastTrends[direction] = trends[direction];
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .map(
+          direction => `${direction} - ${trendToWord(trends[direction])} тренд.`
+        );
+
+      if (listOfTrends.length) {
+        bot.sendMessage(listOfTrends.join("\n"));
+      }
+    } catch ({ message }) {
+      console.error(message);
     }
-  } catch ({ message }) {
-    throw new Error(`Failed to load neural network image: ${message}`);
   }
 })();
