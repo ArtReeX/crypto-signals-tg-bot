@@ -26,7 +26,10 @@ const trendToWord = (trend: Trend): string => {
       const requests: { [key: string]: Promise<ICandle[]> } = {};
       for (let symbol of symbols) {
         for (let interval of intervals) {
-          requests[symbol + interval] = binance.getHistory(symbol, interval);
+          requests[`${symbol}/${interval}`] = binance.getHistory(
+            symbol,
+            interval
+          );
         }
       }
 
