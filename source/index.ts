@@ -37,7 +37,7 @@ const trendToWord = (trend: Trend): string => {
         trends[direction] = getTrend(executed[direction]);
       }
 
-      const listOfTrends = Object.keys(trends)
+      Object.keys(trends)
         .sort()
         .filter(direction => {
           if (
@@ -50,13 +50,11 @@ const trendToWord = (trend: Trend): string => {
             return false;
           }
         })
-        .map(
-          direction => `${direction} - ${trendToWord(trends[direction])} тренд.`
+        .forEach(direction =>
+          bot.sendMessage(
+            `${direction} - ${trendToWord(trends[direction])} тренд.`
+          )
         );
-
-      if (listOfTrends.length) {
-        bot.sendMessage(listOfTrends.join("\n"));
-      }
     } catch ({ message }) {
       console.error(message);
     }
