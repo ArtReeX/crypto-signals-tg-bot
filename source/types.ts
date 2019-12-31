@@ -5,3 +5,9 @@ export interface ICandle {
   close: number;
   volume: number;
 }
+
+export enum Trend {
+  BULLISH = 1,
+  NEUTRAL = 0,
+  BEARISH = -1
+}
