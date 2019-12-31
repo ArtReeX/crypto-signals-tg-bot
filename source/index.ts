@@ -1,17 +1,17 @@
 import binance from "./binance";
 import bot from "./bot";
 import getConfig from "./config";
-import getTrend, { Trend } from "./getTrend";
+import detector from "currency-pattern-detector/build";
 import limiter from "./limiter";
-import { ICandle } from "./types";
+import { ICandle, Trend } from "./types";
 
 const { symbols, intervals } = getConfig();
 
 const trendToWord = (trend: Trend): string => {
   switch (trend) {
-    case "BULLISH":
+    case Trend.BULLISH:
       return "бычий";
-    case "BEARISH":
+    case Trend.BEARISH:
       return "медвежий";
     default:
       return "нейтральный";
@@ -37,7 +37,7 @@ const trendToWord = (trend: Trend): string => {
       const trends: { [key: string]: Trend } = {};
 
       for (const direction in executed) {
-        trends[direction] = getTrend(executed[direction]);
+        trends[direction] = detector(executed[direction]);
       }
 
       Object.keys(trends)

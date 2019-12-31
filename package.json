@@ -35,9 +35,9 @@
   },
   "dependencies": {
     "binance-api-node": "^0.9.12",
+    "currency-pattern-detector": "0.0.3",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "node-telegram-bot-api": "^0.40.0",
-    "technicalindicators": "^3.0.0"
+    "node-telegram-bot-api": "^0.40.0"
   }
 }
