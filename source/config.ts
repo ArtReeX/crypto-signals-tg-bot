@@ -16,9 +16,9 @@ export type Interval =
   | "1w"
   | "1M";
 
-export interface IDirections {
-  [key: string]: [Interval];
-}
+export type IIntervals = {
+  [key in Interval]: number;
+};
 
 interface IConfig {
   telegram: {
@@ -26,7 +26,7 @@ interface IConfig {
     chat: number;
   };
   symbols: string[];
-  intervals: Interval[];
+  intervals: IIntervals;
 }
 
 export default (): IConfig => config;

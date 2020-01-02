@@ -3,6 +3,6 @@
     "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
     "chat": -1001158670090
   },
-  "symbols": ["BTCUSDT"],
-  "intervals": ["15m"]
+  "symbols": ["BTCUSDT", "ETHUSDT", "XRPUSDT"],
+  "intervals": { "15m": 1 }
 }

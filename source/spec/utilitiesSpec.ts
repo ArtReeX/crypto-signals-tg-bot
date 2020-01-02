@@ -1,5 +1,5 @@
 import "jasmine";
-import { sma, ema, differenceInPercent } from "../core/utilities";
+import { sma, ema, differenceInPercent } from "../utilities";
 
 describe("utilities", () => {
   it("sma", () => {

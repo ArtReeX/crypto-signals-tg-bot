@@ -17,7 +17,7 @@ A bot for Telegram based on a neural network that displays signals for the purch
     "seqPast": 10,
     "seqFuture": 1,
     "epochs": 50
-},
+}
 ```
 
 ### telegram
@@ -29,13 +29,13 @@ A bot for Telegram based on a neural network that displays signals for the purch
 "telegram": {
   "token": "1017355485:AAH2YMpsw6c-iTZhU8BEAabvduHSpQ2SvXE",
   "chat": -1001158670090
-},
+}
 ```
 
 ### directions
 
 ```json
-  "directions": ["BTCUSDT", "ETHUSDT", "BCHUSDT", "BNBUSDT"],
-  "intervals": ["4h"]
-},
+  "symbols": ["BTCUSDT"],
+  "intervals": { "15m": 1 }
+}
 ```
