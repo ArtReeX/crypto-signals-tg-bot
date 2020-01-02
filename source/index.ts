@@ -5,6 +5,7 @@ import { ICandle } from "./types";
 import limiter from "./limiter";
 import _ from "lodash";
 import config, { Interval } from "./config";
+import bot from "./bot";
 
 const { symbols, intervals } = config();
 
@@ -59,7 +60,7 @@ const { symbols, intervals } = config();
 
       if (!_.isEqual(last[direction], result)) {
         last[direction] = _.cloneDeep(result);
-        console.log(`[${direction}] - ${result[0].close.toFixed(8)}`);
+        bot.sendMessage(`[${direction}] - ${result[0].close.toFixed(8)}`);
       }
     }
 
