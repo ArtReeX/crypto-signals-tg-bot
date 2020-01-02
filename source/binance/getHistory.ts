@@ -84,7 +84,7 @@ export default async (
   }
 
   // delete current candle
-  candles.pop();
+  // candles.pop();
 
   return candles.map(c => ({
     open: Number(c.open),

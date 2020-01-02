@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "NODE_ENV=development nodemon ./.build/index --watch ./.build --delay 3",
-    "prod": "NODE_ENV=production node ./build/index"
+    "prod": "NODE_ENV=production node ./build/index",
+    "test": "./node_modules/.bin/jasmine"
   },
   "repository": {
     "type": "git",
@@ -28,8 +29,10 @@
   },
   "homepage": "https://github.com/ArtReeX/crypto-signals-tg-bot#readme",
   "devDependencies": {
+    "@types/jasmine": "^3.5.0",
     "@types/lodash": "^4.14.149",
     "@types/node-telegram-bot-api": "^0.40.1",
+    "jasmine": "^3.5.0",
     "nodemon": "^2.0.2",
     "typescript": "^3.7.4"
   },

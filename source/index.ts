@@ -5,11 +5,12 @@ import { ICandle } from "./types";
 import limiter from "./limiter";
 import _ from "lodash";
 import config, { Interval } from "./config";
-import bot from "./bot";
+import { ema, differenceInPercent } from "./core/utilities";
 
 const { symbols, intervals } = config();
 
 (async () => {
+  /*
   const core = new Core({
     previousSeq: 15,
     futureSeq: 1,
@@ -42,8 +43,9 @@ const { symbols, intervals } = config();
 
     await core.train(samples);
   }
+  */
 
-  const last: { [key: string]: ICandle[] } = {};
+  const wasSignal: { [key: string]: boolean } = {};
 
   for (; true; ) {
     const requests: { [key: string]: Promise<ICandle[]> } = {};
@@ -56,11 +58,19 @@ const { symbols, intervals } = config();
     const executed = await limiter.execute(requests);
 
     for (const direction in executed) {
-      const result = core.predict(executed[direction]);
+      const closes: number[] = executed[direction].map((c: ICandle) => c.close);
+      const indicators = ema(closes, 5);
+      const difference = differenceInPercent(
+        closes[closes.length - 1],
+        indicators[indicators.length - 2]
+      );
 
-      if (!_.isEqual(last[direction], result)) {
-        last[direction] = _.cloneDeep(result);
-        bot.sendMessage(`[${direction}] - ${result[0].close.toFixed(8)}`);
+      if (Math.abs(difference) > 1 && wasSignal[direction] === false) {
+        wasSignal[direction] = true;
+
+        console.log(`[${direction}] - ${difference > 0 ? "PUMP" : "PUMP"}.`);
+      } else {
+        wasSignal[direction] = false;
       }
     }
 
