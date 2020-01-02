@@ -1,9 +1,9 @@
 import _ from "lodash";
 
-export default async (
+const execute = async (
   promises: { [key: string]: Promise<any> },
   limitPerSecond: number = 15
-): Promise<any[]> => {
+): Promise<{ [key: string]: any }> => {
   const unzipped = _.values(promises);
   const paths: Promise<any>[][] = [];
   const executed: any[] = [];
@@ -17,10 +17,12 @@ export default async (
     await sleep(1);
   }
 
-  return _.zipObject(_.keys(promises), executed) as Promise<any[]>;
+  return _.zipObject(_.keys(promises), executed);
 };
 
 const sleep = async (second: number): Promise<void> =>
   new Promise(resolve => {
     setTimeout(() => resolve(), second * 1000);
   });
+
+export default { execute, sleep };
