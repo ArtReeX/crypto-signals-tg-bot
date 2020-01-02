@@ -9,9 +9,8 @@ import { ema, differenceInPercent } from "./utilities";
 import bot from "./bot";
 import Tracker from "./Tracker";
 
-const { symbols, intervals } = config();
-
 (async () => {
+  const { symbols, intervals } = config();
   const tracker = new Tracker();
 
   for (; true; ) {
