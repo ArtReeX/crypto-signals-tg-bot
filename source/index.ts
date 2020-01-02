@@ -6,6 +6,7 @@ import limiter from "./limiter";
 import _ from "lodash";
 import config, { Interval } from "./config";
 import { ema, differenceInPercent } from "./core/utilities";
+import bot from "./bot";
 
 const { symbols, intervals } = config();
 
@@ -68,7 +69,7 @@ const { symbols, intervals } = config();
       if (Math.abs(difference) > 1 && wasSignal[direction] === false) {
         wasSignal[direction] = true;
 
-        console.log(`[${direction}] - ${difference > 0 ? "PUMP" : "PUMP"}.`);
+        bot.sendMessage(`${direction} - ${difference > 0 ? "PUMP" : "PUMP"}`);
       } else {
         wasSignal[direction] = false;
       }
