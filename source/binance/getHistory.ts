@@ -90,7 +90,6 @@ export default async (
     open: Number(c.open),
     close: Number(c.close),
     high: Number(c.high),
-    low: Number(c.low),
-    volume: Number(c.volume)
+    low: Number(c.low)
   }));
 };

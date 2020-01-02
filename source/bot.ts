@@ -7,7 +7,6 @@ const {
 
 const bot = new TelegramBot(token, { polling: false });
 
-const sendMessage = (message: string) =>
-  bot.sendMessage(chat, message, { parse_mode: "Markdown" });
+const sendMessage = (message: string) => bot.sendMessage(chat, message);
 
 export default { sendMessage };
