@@ -38,7 +38,9 @@ import Tracker from "./Tracker";
         Math.abs(difference) > intervals[direction.split("/")[1] as Interval] &&
         tracker.isAllowed(direction)
       ) {
-        bot.sendMessage(`${direction} - резкое изменение на ${difference}%.`);
+        bot.sendMessage(
+          `${direction} - резкое изменение на ${difference.toFixed(2)}%.`
+        );
         tracker.add(direction);
       }
     }
